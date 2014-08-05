@@ -1,0 +1,19 @@
+{
+  "name": "bsjs",
+  "version": "0.5.4",
+  "homepage": "https://github.com/projectBS/bsJS",
+  "authors": [
+    "projectBS committee"
+  ],
+  "description": "OpenSource JavaScript library for Server/Client Env.",
+  "main": "./bsjs.0.5.js",
+  "keywords": [
+    "node.js",
+    "library"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "lab"
+  ]
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<title>space</title>
+<meta name="keywords" content="bs5"/>
+<meta name="description" content="bs5 Test suite"/>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="viewport"
+      content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+<a href="https://github.com/projectBS/bsJS">
+    <img style="position: fixed; top: 0; right: 0; border: 0;z-index:10000000000000000000000"
+         src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+</a>
+
+<div id="stage"></div>
+<script src="../../../bsJS/bsjs.0.3.js"></script>
+<script>
+    bs.plugin('d3', 'last'), bs.plugin('sprite', 'last')
+
+    bs(function() {
+        var isMobile=(bs.DETECT.device=='tablet'||bs.DETECT.device=='mobile') ? 1 : 0
+        console.log(isMobile)
+        bs.Css('img').S('transform', 'rotateZ(0deg)'), bs.Css('div').S('transform', 'rotateZ(0deg)')
+        bs.Dom("<div></div>").S('<', 'body', '@id', 'stage')
+        bs.Dom('<div><img src="d3/spaceBg' + (isMobile ? "_m" : "") + '.png" width="100%" ></div>').S('<', '#stage', 'position', 'absolute', 'width', '100%', '@id', 'bgImage')
+
+
+        bs.D3('camera@doom'), bs.D3('camera@doom').S('camera').S('left', 'a', 'right', 'd', 'panleft', 'q', 'panright', 'e', 'tiltup', 't', 'tiltdown', 'g', 'up', 'r', 'down', 'f')
+        bs.D3('camera@doom').S('camera').y= -300, bs.D3('camera@doom').S('camera').tilt= -130
+        bs.D3m('mat').S('html', "<img src='d3/ship.png'>"), bs.D3m('mat2').S('html', "<img src='d3/rock.png'>"), bs.D3m('mat3').S('html', "<img src='d3/rock2.png'>");
+
+        var started;
+        bs.Css('body').S('background', '#000', 'overflow', 'hidden', 'margin', 0), bs.Css('.ani').S('position', 'absolute');
+        bs.WIN.sizer(function(w, h) {
+            var i, k, s, sh=0, sw=0;
+            bs.Dom("#stage").S('width', w, 'height', h)
+            if(started) {
+                bs.Dom('#btFc').S('top', h - 25), bs.Dom('#btFl').S('top', h - 88, 'left', 0), bs.Dom('#btFr').S('top', h - 88, 'left', w - 135), bs.Dom('#btFlight').S('top', h - 145, 'left', 38), bs.Dom('#btFlight2').S('top', h - 140, 'left', w - 115)
+                return;
+            }
+            var planeMax=isMobile ? 10 : 50
+            var planeNum=0
+            var ufos=[], rocks=[]
+            var ufo={
+                ANI: function() {
+                    var dt
+                    if(ufos.length==planeMax) {
+                        dt=ufos.shift()
+                        if(dt) dt.S(null)
+                    }
+                    if(rocks.length==planeMax) {
+                        dt=rocks.shift()
+                        if(dt) dt.S(null)
+                    }
+                    if(++planeNum % 20==0) ufos.push(bs.D3('plane@aa' + planeNum)), addItem(ufos, 'mat')
+                    else if(++planeNum % 29==0) rocks.push(bs.D3('plane@aa' + planeNum)), addItem(rocks, 'mat1')
+                    else if(++planeNum % 15==0) rocks.push(bs.D3('plane@aa' + planeNum)), addItem(rocks, 'mat2')
+                    for(var i=0; i < ufos.length; i++) ufos[i].S('z', ufos[i].S('z') + 10)
+                    for(var i=0; i < rocks.length; i++) rocks[i].S('z', rocks[i].S('z') - 20)
+                }
+            }
+
+            function addItem($list, $map) {
+                var s=bs.randf(0.5, 2)
+                if($list==rocks) {
+                    $list[$list.length - 1].S('<', '#stage', 'x', bs.rand(-w / 2, w / 2), 'z', 2500, 'width', 128 * s, 'height', 128 * s, 'material', $map, 'transform', 'rotateZ(' + bs.rand(-10, 10) + 'deg)',
+                            'mousedown', function($e) {
+                                var w=bs.Dom($e.target).S('width')
+                                bs.Sprite('explosion2').S('@0', '<', '#stage', 'time', bs.randf(0.5, 1), 'width', w, 'height', w, 'left', $e.cx - w / 2, 'top', $e.cy - w / 2, '@')
+                                bs.Dom($e.target).S(null)
+                            })
+                } else {
+                    $list[$list.length - 1].S('<', '#stage', 'x', bs.rand(-w / 2, w / 2), 'z', 0, 'width', 256 * s, 'height', 64 * s, 'material', $map, 'transform', 'rotateZ(' + bs.rand(-10, 10) + 'deg)',
+                            'mousedown', function($e) {
+                                var w=bs.Dom($e.target).S('width')
+                                bs.Sprite('explosion').S('@0', '<', '#stage', 'time', bs.randf(0.5, 1), 'width', w, 'height', w, 'left', $e.cx - w / 2, 'top', $e.cy - w / 2, '@')
+                                bs.Dom($e.target).S(null)
+                            })
+                }
+            }
+
+            bs.ANI.ani(ufo)
+            started=1, i=isMobile ? 0 : 50;
+            while(i--) {
+                k=bs.rand(0, 1), s=bs.rand(3, 25);
+                bs.ANI.tween(
+                        bs.Dom('<div></div>').S(
+                                'opacity', 1, 'left', w * .5 + sw, 'top', h * .5 + sh, 'width', 1, 'height', 1,
+                                'html', "<img src='d3/bullet.png' width='100%' height='100%'>",
+                                'class', 'ani', '<', '#stage', 'this'
+                        ),
+                        'opacity', 0, 'width', s, 'height', s, 'left', k ? bs.rand(0, 1) ? 0 : w - 30 : bs.rand(0, w - 30), 'top', k ? bs.rand(0, h - 30) : bs.rand(0, 1) ? 0 : h - 30,
+                        'delay', bs.randf(0, 5), 'time', bs.randf(5, 5), 'loop', 0
+                );
+            }
+
+            var imgPath='d3/';
+            bs.Dom('<div><img src=' + imgPath + "frame_bottom.jpg width=100%" + '></div>').S('<', '#stage', '@id', 'btFc', 'position', 'absolute', 'top', h, 'width', '100%', 'height', '100', 'z-index', 100000000001)
+            bs.Dom('<div><img src=' + imgPath + 'frame_left.png' + '></div>').S('<', '#stage', '@id', 'btFl', 'position', 'absolute', 'top', h - 88, 'z-index', 100000000001)
+            bs.Dom('<div><img src=' + imgPath + 'frame_right.png' + '></div>').S('<', '#stage', '@id', 'btFr', 'position', 'absolute', 'left', w, 'top', h - 88, 'z-index', 100000000001)
+            bs.Dom('<div><img src=' + imgPath + 'frame_Light.png' + '></div>').S('<', '#stage', '@id', 'btFlight', 'position', 'absolute', 'top', h - 145, 'left', 38, 'opacity', 0, 'z-index', 100000000001)
+            bs.Dom('<div><img src=' + imgPath + 'frame_Light2.png' + '></div>').S('<', '#stage', '@id', 'btFlight2', 'position', 'absolute', 'top', h - 140, 'left', w - 115, 'opacity', 0, 'z-index', 100000000001)
+            bs.ANI.tween(bs.Dom('#btFc').S('opacity', 0, 'this'), 'top', h - 25, 'opacity', 1, 'ease', 'sineOut', 'time', 0.5, 'loop', 1)
+            bs.ANI.tween(bs.Dom('#btFl').S('left', -156, 'this'), 'left', 0, 'delay', 1, 'ease', 'backOut', 'time', 1, 'loop', 1)
+            bs.ANI.tween(bs.Dom('#btFr').S('left', w, 'this'), 'left', w - 135, 'delay', 1, 'ease', 'backOut', 'time', 1, 'loop', 1)
+            bs.ANI.tween(bs.Dom('#btFlight').S('opacity', 0, 'this'), 'opacity', 1, 'ease', 'sineOut', 'delay', 2, 'time', 1, 'loop', 1, 'end', loopLight) // 라이트 온오프
+            bs.ANI.tween(bs.Dom('#btFlight2').S('opacity', 0, 'this'), 'opacity', 1, 'ease', 'sineOut', 'delay', 2, 'time', 1, 'loop', 1)
+            function makeFire() {
+                bs.Sprite('explosion').S('src', imgPath + 'explosion.png', 'col', 29, 'row', 1);
+                bs.Sprite('explosion2').S('src', imgPath + 'fire1.png', 'col', 6, 'row', 4),
+                        bs.Dom('#stage').S('>', bs.Sprite('explosion').S('@0', 'position', 'absolute', 'z-index', 10000000000001, 'div'),
+                                'overflow', 'hidden', 'background', '#000', 'width', w, 'height', h
+                        )
+                bs.Dom('#stage').S('>', bs.Sprite('explosion2').S('@0', 'position', 'absolute', 'z-index', 10000000000001, 'div'),
+                        'overflow', 'hidden', 'background', '#000', 'width', w, 'height', h
+                )
+
+
+            }
+
+            makeFire()
+            var lightOn=true
+
+            function loopLight($target) {
+                if(lightOn) bs.ANI.tween($target, 'opacity', 0, 'ease', 'sineOut', 'time', 1, 'loop', 1, 'end', loopLight), bs.ANI.tween(bs.Dom('#btFlight2'), 'opacity', 0, 'ease', 'sineOut', 'time', 1, 'loop', 1), lightOn=false
+                else bs.ANI.tween($target, 'opacity', 1, 'ease', 'sineOut', 'time', 1, 'loop', 1, 'end', loopLight), bs.ANI.tween(bs.Dom('#btFlight2'), 'opacity', 1, 'ease', 'sineOut', 'time', 1, 'loop', 1), lightOn=true
+            }
+
+            bs.img(setTarget, imgPath + 'targetArrow.png', imgPath + 'targetArrowRotationA.png'); // 이미지 부르고 콜백검
+            function setTarget($images) {
+                bs.Dom('<div></div>').S('<', '#stage', '@id', 'targetArrow', 'position', 'absolute') // 타겟포인트 div
+                var i=$images.length
+                while(i--) bs.Dom('<div></div>').S('<', '#targetArrow', '@id', 'targetArrow' + i, 'position', 'absolute', 'top', (198 - $images[i].width) / 2, 'left', (198 - $images[i].height) / 2, '>', $images[i])
+                bs.ANI.tween(bs.Dom('#targetArrow').S('width', $images[1].width, 'height', $images[1].height, 'opacity', 0, 'this'), 'opacity', 1, 'time', 0.5, 'loop', 1)
+                bs.Dom('<div></div>').S('<', '#targetArrow', '@id', 'localPoint', 'position', 'absolute', 'font-size', 11, 'text-align', 'center', 'color', '#fff', 'width', '100%', 'top', 155)
+                var targetArrowRotation=0
+                bs.Dom('#stage').S('mousemove', function($e) {
+                            targetArrowRotation++, bs.Dom('#targetArrow').S('left', $e.cx - 100, 'top', $e.cy - 100), bs.Dom('#localPoint').S('html', 'X :' + $e.cx + "/" + 'Y :' + $e.cy), bs.Dom('#targetArrow1').S('transform', 'rotateZ(' + targetArrowRotation + 'deg)')
+                        }
+                )
+            }
+
+            function setDebuger() {
+                bs.Dom('<div></div>').S('<', 'body', '@id', 'debuger', 'left', 15, 'top', 15, 'font-size', 11, 'background', '#333', 'width', 190, 'padding', 15, 'z-index', 10000000000, 'position', 'absolute', 'opacity', 0.3, 'color', '#fff', 'border-radius', 5, 'box-shadow', 'inset 0 1px 0 #aaa')
+                // 디버거 세팅
+                var debuger={
+                    ANI: function($time) {
+                        bs.Dom('#bgImage').S('transform', 'rotateZ(' + Math.sin($time / 250) + 'deg)')
+                        var camera=bs.D3('camera@doom').S('camera')
+                        var str="bs.D3('camera@doom').S('camera')"
+                        str+='<br><br>x :' + camera.x
+                        str+='<br>y :' + camera.y
+                        str+='<br>z :' + camera.z
+                        str+='<br>pan :' + camera.pan
+                        str+='<br>tilt :' + camera.tilt
+                        str+='<br>speed :' + camera.speed
+                        str+='<br>farclip :' + camera.farclip
+                        bs.Dom('#debuger').S('html', str)
+                    }
+                }
+                bs.ANI.ani(debuger)
+            }
+
+            setDebuger()
+        })
+    })
+</script>
+</body>
+</html>

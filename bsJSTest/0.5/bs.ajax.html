@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs 0.4 ajax Test suit</title>
+<meta charset="utf-8"/>
+<meta name="keywords" content="bsjs 0.4" />
+<meta name="description" content="bsjs 0.4 Test suite" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+</head>
+<body>
+<div id="stage"></div>
+<br clear="both">
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.5.js"></script>
+<script src="../../bsJSTest/bsTest.js"></script>
+<script src="../../bsJSTest/0.4/printer.js"></script>
+<script>
+bs( function(){
+	bsTest.tear( 'bs.ajax.json', function(){
+		var json = {"a": 1, "b": 2, "c": 3};
+	} );
+	bs.get( function( rs ){
+		var r = JSON.parse(rs);
+		bsTest( 'ajax async::GET',
+			'data.a', r.a, 1,
+			'data.c', r.c, 3
+		);
+	}, 'bs.ajax.json' );
+
+	bsTest( 'ajax sync::GET',
+		function(){
+			return JSON.parse(bs.get( null, 'bs.ajax.json' )).a;
+		}, 1,
+		function(){
+			return JSON.parse(bs.get( null, 'bs.ajax.json' )).b;
+		}, 2
+	);
+	if( location.href.indexOf('bsidesoft.com') > -1 ){
+		bsTest( 'ajax sync::POST',
+			function(){
+				var t0 = {a:3,b:5};
+				return JSON.parse(bs.post( null, 'http://www.bsidesoft.com/bs/bsJStest/0.4/bs.ajax.php', 'data', JSON.stringify(t0) )).b;
+			}, 5,
+			function(){
+				var t0 = {a:3,b:5};
+				return JSON.parse(bs.post( null, 'http://www.bsidesoft.com/bs/bsJStest/0.4/bs.ajax.php', 'data', t0 )).b;
+			}, 5
+		);
+	}
+	var u = 'http://api.bsplugin.com/bsNet/php/echo.0.1.php', f;
+	f = [function( data ){
+		var t = JSON.parse(data), title = 'crossProxy::get';
+		console.log( title, t );
+		bsTest.apply( null, [
+			title,
+			'method', t.method, 'GET', 
+			'data.k1', t.data.k1, 'v1',
+			'data.k2', t.data.k2, 'v2',
+			"header['Content-Type']", t.header['Content-Type'], 'text/plain; charset=UTF-8',
+			"header['Custom']", t.header['Custom'], 'test',
+		]);
+		bs.post( f[1], u, 'k1', 'v1', 'k2', 'v2', '@Custom', 'test' );
+	}, function( data ){
+		var t = JSON.parse(data), title = 'crossProxy::post';
+		console.log( title, t );
+		bsTest.apply( null, [
+			title,
+			'method', t.method, 'POST', 
+			'data.k1', t.data.k1, 'v1',
+			'data.k2', t.data.k2, 'v2',
+			"header['Content-Type']", t.header['Content-Type'], 'application/x-www-form-urlencoded; charset=UTF-8',
+			"header['Custom']", t.header['Custom'], 'test',
+		]);
+		bs.put( f[2], u, 'k1', 'v1', 'k2', 'v2', '@Custom', 'test' );
+	}, function( data ){
+		var t = JSON.parse(data), title = 'crossProxy::put';
+		console.log( title, t );
+		bsTest.apply( null, [
+			title,
+			'method', t.method, 'PUT', 
+			'data.k1', t.data.k1, 'v1',
+			'data.k2', t.data.k2, 'v2',
+			"header['Content-Type']", t.header['Content-Type'], 'application/x-www-form-urlencoded; charset=UTF-8',
+			"header['Custom']", t.header['Custom'], 'test',
+		]);
+		bs['delete']( f[3], u, 'k1', 'v1', 'k2', 'v2', '@Custom', 'test' );
+	}, function( data ){
+		var t = JSON.parse(data), title = 'crossProxy::delete';
+		console.log( title, t );
+		bsTest.apply( null, [
+			title,
+			'method', t.method, 'DELETE', 
+			'data.k1', t.data.k1, 'v1',
+			'data.k2', t.data.k2, 'v2',
+			"header['Content-Type']", t.header['Content-Type'], 'application/x-www-form-urlencoded; charset=UTF-8',
+			"header['Custom']", t.header['Custom'], 'test',
+		]);
+	}];
+	bs.get( f[0], u, 'k1', 'v1', 'k2', 'v2', '@Custom', 'test' );
+}); 
+</script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>redcamel-ui-draft</title>
+    <meta name="keywords" content="redcamel"/>
+    <meta name="description" content="redcamel"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="viewport"content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,target-densitydpi=medium-dpi"/>
+    <link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+<script src="../../../bsJS/bsjs.0.3.js"></script>
+
+<div class="_CLEAR"></div>
+<script>
+// 2014.03.23
+// By Redcamel
+// 개발목적 : Open API를 연동해봅세... JSON 콜백처리도 좀 -_-;;
+bs(function() {
+
+    bs.Css('.exBase').S('border','1px #ccc solid','padding',10,'background','#eee')
+    start()
+    function start() {
+        var target=bs.Dom('<div></div>').S('<', 'body', '@id', 'stage', 'max-width', 980, 'margin', '0px auto', 'padding', 20, 'this')
+        target.S('>', bs.Dom('<div><a href="https://github.com/projectBS/bsJS/"><img src="ui/res/logo.png"></a></div>').S('background', '#333', 'padding', 20, 'border-radius', 10, 'this'))
+
+        // bs 패널생성
+        var panel, panelContents
+        panel = bs.Ui('panel','default','title@bs.Ui진행계획')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+
+        bs.Dom('<div></div>').S('<', panelContents, 'html',
+                "<li>bs.Ui는 부트스트랩 css를 기본적으로 사용하며 테마파일 적용을 지원합니다.(1차적용완료)</li>"+
+                        "<li><b>(1차완료)</b> 일단 기본 form 양식부터 해결</li>"+
+                        "<li>확장 기본 단위UI 결정 및 개발(ex - 스피너/온오프버튼..등등 기본이 되는단위부터(아마 이쯤에서 플러그인화 될듯)</li>"+
+                        "<li><b>(1차완료)</b> 버튼아이콘 / 버튼 그룹/ 버튼 그룹 툴바 / alert</li>"+
+                        '<ol>- 아이콘있는 버튼 및 컨테이너 형태에대해서 정의해야할듯하고</ol>'+
+                        "<li>확장 레이아웃 단위 UI 결정 및 개발(에디드온으로 갈지 플러그인으로 걍 다떄려박을지는 몰것네용,여튼먼가 복잡한형태에 대한 확장)</li>"+
+                        '<ol>- 최종테크는 역시 네비인가..</ol>'+
+                        '<ol>- tabs</ol>'+
+                        '<ol>- 얼마전에 올린 링크리스트 같은거..도 가능하것고..(갤러리의 원형이 되것지..갤러리는 아예 bs.Ui를 의존하는 새로운 플러그인화될지도)</ol>'+
+                        '<li>아마도 확장단위부터는 생성후 오브젝트를 반환하는 형식이될듯<br> {<br>  box:랩퍼컨테이너(bsDom),<br>  contents:[요소1(bsDom),요소2(bsDom)] // 요소명을 다 네이밍화하기엔 버거움 배열로 일단 생각중<br> }</li>'+
+                        "<li>자 추가할 리스트 생각나는게 있으면 적으시라~~~</li>"
+                , 'display', 'block', 'padding', '0px 0px 10px 0px')
+
+        ///여기서 부터 보심됩니다 -0-;;
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 테마변경
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@테마변경')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                "<li>bs.Ui('theme','테마CSS경로(아래쪽 테마 버튼 누르시면 변경)')</li>"+
+                        '<li><a href="http://bootswatch.com/" target="_blank"> 여기서 테마css만 골라서 테스트해보셔도;;</a></li>'
+        );
+        panelContents.S(
+                '>', bs.Ui('button', 'danger').S('@value', '기본테마', 'mousedown', function(){bs.Ui('theme', '//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css')}, 'this'),
+                '>', bs.Ui('button', 'danger').S('@value', 'cerulean 테마', 'mousedown', function(){bs.Ui('theme', 'http://bootswatch.com/cerulean/bootstrap.min.css')}, 'this'),
+                '>', bs.Ui('button', 'danger').S('@value', 'darkly 테마', 'mousedown', function(){bs.Ui('theme', 'http://bootswatch.com/darkly/bootstrap.min.css')}, 'this'),
+                '>', bs.Ui('button', 'danger').S('@value', 'shamrock 테마', 'mousedown', function(){bs.Ui('theme', 'http://bootswatch.com/shamrock/bootstrap.min.css')}, 'this'),
+                '>', bs.Ui('button', 'danger').S('@value', 'superhero 테마', 'mousedown', function(){bs.Ui('theme', 'http://bootswatch.com/superhero/bootstrap.min.css')}, 'this')
+        )
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // (인풋버튼)
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@기본버튼생성')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                '<li>input,form,label - 생성은 각각 다음과 같습니다</li>'+
+                        "<li> bs.Ui('label','danger').S(~~~~~)</li>"+
+                        "<li> bs.Ui('form').S(~~~~~)</li>"+
+                        "<li> bs.Ui('타입!','className','className','className'....).S(~~~~~) - ex) bs.Ui('button') ,bs.Ui('email')</li>"+
+                        "<li> 타입이 버튼일경우 btn-default와 같은 클래스네임을 btn-를 빼고 dafault만 설정하시면됩니다.</li>"
+        )
+
+        panelContents.S(
+                '>', bs.Ui('button').S('@value', "bs.Ui('button')", 'this'),
+                '>', bs.Ui('button', 'default', 'lg').S( '@value', "bs.Ui('button','default','lg')", 'this'),
+                '>', bs.Ui('button', 'primary').S( '@value', "bs.Ui('button','primary')", 'this'),
+                '>', bs.Ui('button', 'success', 'sm').S( '@value', "bs.Ui('button','success','sm')", 'this'),
+                '>', bs.Ui('button', 'info', 'xs').S( '@value', "bs.Ui('button','info','xs')", 'this'),
+                '>', bs.Ui('button', 'warning', 'sm').S( '@value', "bs.Ui('button','warning','sm')", 'this'),
+                '>', bs.Ui('button', 'danger').S( '@value', "bs.Ui('button','danger')", 'this'),
+                '>', bs.Ui('button', 'link', 'lg').S( '@value', "bs.Ui('button','link','lg')", 'this')
+        )
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 아이콘있는 버튼 구조체
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@버튼아이콘생성')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                '<li>bs.Ui("buttonIcon","icon@글리피콘네임")</li>'+
+                        '<li>텍스트는 html+를 통해 입력합니다.</li>'
+        )
+
+        panelContents.S(
+                '>', bs.Ui('buttonIcon', 'icon@star').S('html+', ' star', 'this'),
+                '>', bs.Ui('buttonIcon', 'default', 'lg', 'icon@star').S('html+', ' star', 'this'),
+                '>', bs.Ui('buttonIcon', 'primary', 'icon@asterisk').S('html+', ' asterisk', 'this'),
+                '>', bs.Ui('buttonIcon', 'success', 'sm', 'icon@asterisk').S('html+', ' asterisk', 'this'),
+                '>', bs.Ui('buttonIcon', 'info', 'xs', 'icon@remove').S('html+', ' remove', 'this'),
+                '>', bs.Ui('buttonIcon', 'warning', 'sm', 'icon@remove').S('html+', ' remove', 'this'),
+                '>', bs.Ui('buttonIcon', 'danger', 'icon@star').S('html+', ' star', 'this'),
+                '>', bs.Ui('buttonIcon', 'link', 'lg', 'icon@star').S('html+', ' star', 'this'),
+                '>', bs.Dom('<div></div>').S('html','반환구조','this'),
+                '>', bs.Dom('<div></div>').S('@class', 'exBase','html','button Tag<br><br>',
+                        '>', bs.Dom('<div></div>').S('@class', 'exBase', 'float', 'left', 'html','span tag(icon)','this'),
+                        '>', bs.Dom('<div></div>').S('html', 'text', '@class', 'exBase', 'float', 'right', 'this'),
+                        '>', bs.Dom('<div></div>').S('clear', 'both', 'this'),
+                        'this'
+                )
+        )
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 버튼그룹
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@버튼그룹생성')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                '<li>bs.Ui("buttonGroup")</li>'
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', "bs.Ui('buttonGroup','lg') 버튼그룹자체에 사이즈적용")
+        bs.Ui('buttonGroup', 'lg').S('<', panelContents,
+                '>', bs.Ui('buttonIcon', 'icon@align-left', 'success').S('html+', ' left', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-center', 'success').S('html+', ' center', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-right', 'success').S('html+', ' right', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-justify', 'success').S('html+', ' justify', 'this')
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', "bs.Ui('buttonGroup') 응용")
+        bs.Ui('buttonGroup').S('<', panelContents,
+                '>', bs.Ui('buttonIcon', 'icon@align-left', 'primary').S('html+', ' left', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-center', 'primary').S('html+', ' center', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-right', 'primary').S('html+', ' right', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-justify', 'primary').S('html+', ' justify', 'this')
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', " bs.Ui('buttonGroup') 응용 내부버튼에 sm적용")
+        bs.Ui('buttonGroup').S('<', panelContents,
+                '>', bs.Ui('buttonIcon', 'icon@align-left', 'success', 'sm').S('html+', ' left', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-center', 'success', 'sm').S('html+', ' center', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-right', 'success', 'sm').S('html+', ' right', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-justify', 'success', 'sm').S('html+', ' justify', 'this')
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', " bs.Ui('buttonGroup') 응용 내부버튼에 xs적용")
+        bs.Ui('buttonGroup').S('<', panelContents,
+                '>', bs.Ui('buttonIcon', 'icon@align-left', 'warning', 'xs').S('html+', ' left', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-center', 'warning', 'xs').S('html+', ' center', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-right', 'warning', 'xs').S('html+', ' right', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-justify', 'warning', 'xs').S('html+', ' justify', 'this')
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', "bs.Ui('buttonGroup','vertical') 버튼그룹에 세로형 지정")
+        bs.Ui('buttonGroup', 'vertical').S('<', panelContents,
+                '>', bs.Ui('buttonIcon', 'icon@align-left', 'warning', 'xs').S('html+', ' left', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-center', 'warning', 'xs').S('html+', ' center', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-right', 'warning', 'xs').S('html+', ' right', 'this'),
+                '>', bs.Ui('buttonIcon', 'icon@align-justify', 'warning', 'xs').S('html+', ' justify', 'this')
+        )
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 버튼툴바
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@버튼툴바생성')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                '<li>bs.Ui("buttonToolbar") - 말그대로 툴바임 텍스트 에디터위에표면 툴바만드는거처럼</li>'
+        )
+        bs.Ui('buttonToolbar').S('<', panelContents,
+                '>', bs.Ui('buttonGroup').S(
+                        '>', bs.Ui('buttonIcon', 'icon@align-left', 'default').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@align-center', 'default').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@align-right', 'default').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@align-justify', 'default').S( 'this'),
+                        'this'
+                ),
+                '>', bs.Ui('buttonGroup').S(
+                        '>', bs.Ui('buttonIcon', 'icon@resize-full', 'default').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@resize-small', 'default').S( 'this'),
+                        'this'
+                ),
+                '>', bs.Ui('buttonGroup').S(
+                        '>', bs.Ui('buttonIcon', 'icon@plus', 'default').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@minus', 'default').S( 'this'),
+                        'this'
+                )
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10)
+        bs.Ui('buttonToolbar').S('<', panelContents,
+                '>', bs.Ui('buttonGroup').S(
+                        '>', bs.Ui('buttonIcon', 'icon@align-left', 'default', 'xs').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@align-center', 'default', 'xs').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@align-right', 'default', 'xs').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@align-justify', 'default', 'xs').S( 'this'),
+                        'this'
+                ),
+                '>', bs.Ui('buttonGroup').S(
+                        '>', bs.Ui('buttonIcon', 'icon@resize-full', 'default', 'xs').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@resize-small', 'default', 'xs').S( 'this'),
+                        'this'
+                ),
+                '>', bs.Ui('buttonGroup').S(
+                        '>', bs.Ui('buttonIcon', 'icon@plus', 'default', 'xs').S( 'this'),
+                        '>', bs.Ui('buttonIcon', 'icon@minus', 'default', 'xs').S( 'this'),
+                        'this'
+                )
+        )
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 인풋태그
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@form 속에 기본 INPUT 넣기')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Ui('form').S('<', panelContents,
+                '>', bs.Ui('button', 'primary').S('@value', "bs.Ui('button','primary')", 'this'),
+                '>', bs.Ui('email').S('@value', "bs.Ui('email')", 'this'),
+                '>', bs.Ui('text').S('@value', "bs.Ui('text')", 'this'),
+                '>', bs.Ui('password').S('@value', "bs.Ui('password')", 'this'),
+                '>', bs.Ui('submit', 'success').S('@value', "bs.Ui('submit')", 'this'),
+                '>', bs.Ui('reset', 'danger').S('@value', "bs.Ui('reset')", 'this'),
+                '>', bs.Ui('label', 'danger').S('html', "bs.Ui('label','danger')", 'this')
+        )
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 라벨즈
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@label')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                '<li>bs.Ui("label", "default").S("html", "label이다", "this")</li>'
+        )
+        panelContents.S(
+                '>', bs.Ui('label', 'default').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'primary').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'success').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'info').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'warning').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'danger').S('html', 'label이다', 'this')
+        )
+        bs.Dom('<h1></h1>').S(
+                '<', panelContents,
+                '>', bs.Ui('label', 'default').S('html', 'label이다', 'this')
+        )
+
+        bs.Dom('<h2></h2>').S(
+                '<', panelContents,
+                '>', bs.Ui('label', 'primary').S('html', 'label이다', 'this')
+        )
+
+        bs.Dom('<h3></h3>').S(
+                '<', panelContents,
+                '>', bs.Ui('label', 'success').S('html', 'label이다', 'this')
+        )
+
+        bs.Dom('<h4></h4>').S(
+                '<', panelContents,
+                '>', bs.Ui('label', 'info').S('html', 'label이다', 'this')
+        )
+
+        bs.Dom('<h5></h5>').S(
+                '<', panelContents,
+                '>', bs.Ui('label', 'warning').S('html', 'label이다', 'this')
+        )
+
+        bs.Dom('<h6></h6>').S(
+                '<', panelContents,
+                '>', bs.Ui('label', 'default').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'primary').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'success').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'info').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'warning').S('html', 'label이다', 'this'),
+                '>', bs.Ui('label', 'danger').S('html', 'label이다', 'this')
+        )
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // badges
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@badges')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        panelContents.S(
+                '>', bs.Dom("<div>bs.Ui('badge').S('html','100')</div>"),
+                '>', bs.Ui('badge').S('html', '100', 'this'),
+                '>', bs.Ui('badge').S('html', '1234567', 'this')
+        )
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // panel
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        target.S('>', bs.Ui('panel','default','title@패널입니다.','contents@패널컨텐츠가 들어가겠죠').box)
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 인풋그룹
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@인풋그룹')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'display', 'block', 'padding', '0px 0px 10px 0px', 'html',
+                '<li>bs.Ui("inputGroup") - 인풋그룹생성</li>'+
+                        '<li>bs.Ui("inputAddon") - 인풋에디드온</li>'
+        )
+        bs.Ui('inputGroup').S('<', panelContents,
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 앞에 붙였다', 'this'),
+                '>', bs.Ui('text').S('@placeholder', '인풋그룹을 사용하면 앞에다 이런걸 붙일수 있지요', 'this')
+        )
+        bs.Ui('inputGroup').S('<', panelContents,
+                '>', bs.Ui('text').S('@placeholder', '인풋그룹을 사용하면 뒤에도 이런걸 붙일수 있지요', 'this'),
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 뒤에 붙였다', 'this')
+        )
+        bs.Ui('inputGroup').S('<', panelContents,
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 앞에 붙였다', 'this'),
+                '>', bs.Ui('text').S('@placeholder', '인풋그룹을 사용하면 앞/뒤에다 전부 이런걸 붙일수도 있지요', 'this'),
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 뒤에 붙였다', 'this')
+        )
+        bs.Dom('<div><b>사이즈지정도 가능한게지요</b></div>').S('<', panelContents, 'margin-top', 10)
+        bs.Dom("<div> bs.Ui('inputGroup','lg')</div>").S('<', panelContents, 'margin-top', 10)
+        bs.Ui('inputGroup', 'lg').S('<', panelContents,
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 앞에 붙였다', 'this'),
+                '>', bs.Ui('text').S('@placeholder', '인풋그룹을 사용하면 앞/뒤에다 전부 이런걸 붙일수도 있지요', 'this'),
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 뒤에 붙였다', 'this')
+        )
+        bs.Dom("<div> bs.Ui('inputGroup','sm')</div>").S('<', panelContents, 'margin-top', 10)
+        bs.Ui('inputGroup', 'sm').S('<', panelContents,
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 앞에 붙였다', 'this'),
+                '>', bs.Ui('text').S('@placeholder', '인풋그룹을 사용하면 앞/뒤에다 전부 이런걸 붙일수도 있지요', 'this'),
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 뒤에 붙였다', 'this')
+        )
+        bs.Dom("<div> bs.Ui('inputGroup','xs') - xs는 안먹습니다.</div>").S('<', panelContents, 'margin-top', 10)
+        bs.Dom("<div>아이콘이랑 같이 응용하면?</div>").S('<', panelContents, 'margin-top', 10)
+        bs.Ui('inputGroup').S('<', panelContents,
+                '>', bs.Ui('inputAddon').S(
+                        '>', bs.Ui('icon', 'align-left', 'default')
+                        , 'this'),
+                '>', bs.Ui('text').S('@placeholder', '인풋그룹을 사용하면 앞/뒤에다 전부 이런걸 붙일수도 있지요', 'this'),
+                '>', bs.Ui('inputAddon').S('html', 'addOn으로 뒤에 붙였다', 'this')
+        )
+        bs.Dom("<div>버튼 에디드온은 고민좀...</div>").S('<', panelContents, 'margin-top', 10)
+        bs.Dom("<div>체크박스  에디드온도 고민좀...</div>").S('<', panelContents, 'margin-top', 10)
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 글리피콘
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@글리피콘')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'html',
+                '<li>부트 스트랩 css를 이용하기에 부트스트랩에서 제공하는 무료 글리피콘을 이용할 수 있음!</li>'+
+                        "<li> bs.Ui('icon','글리피콘 클래스명')</li>"+
+                        "<li> bs.Ui('icon','asterisk')</li>"+
+                        "<li> 글리피콘의 클래스네임은 'glyphicon glyphicon-asterisk'과 같은 형태입니다. 앞의 두개를 생략(glyphicon glyphicon-)하고 클래스명을 입력하시면됩니다. </li>"
+                , 'display', 'block', 'padding', '0px 0px 10px 0px')
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10)
+        panelContents.S(
+                '>', bs.Ui('icon', 'asterisk').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'plus').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'euro').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'minus').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'cloud').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'glass').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'pencil').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'music').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'search').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'heart').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'star').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'star-empty').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'user').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'film').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'th-large').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'th').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'th-list').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'ok').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'remove').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'zoom-in').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'zoom-out').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'off').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'signal').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'cog').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'trash').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'home').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'file').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'time').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'road').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'download-alt').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'download').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'upload').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'inbox').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'play-circle').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'repeat').S('margin', 10, 'this'),
+                '>', bs.Ui('icon', 'refresh').S('margin', 10, 'this')
+        )
+        bs.Ui('alert', 'danger').S('<', panelContents, 'html', '<a href="http://getbootstrap.com/components/" target="_blank">적용가능 글리피콘 더보기...넣기도 구차늠 http://getbootstrap.com/components/</a>')
+
+
+        panel = bs.Ui('panel','default','title@타입에 지원안되는 놈일때도 잘나오나..테스트')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        panelContents.S('>', bs.Ui('음냐냐냔', 'refresh'));
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // dialog
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@다이알로그')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', '고민1. 부트스트랩이...IE7에서 렌더링 오류가 있는듯한데')
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', '고민2. 음 일단 API를 좀더 고민해야것음...먼가 많이 불편해질듯한데')
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', '고민3. API가 확정되면 완전 중앙 정렬도 도입')
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10, 'html', '고민4. 모바일에서 다이알로그가 애매하군....모바일일때는 가로 100%에 적당히 맞춰주는 기능이 필요한겐가')
+        bs.Ui('button', 'default').S('@value', '다이얼로그 띄우기', 'mousedown', function($e){
+            var txt="bs.Ui('dialog', 'title', '타이틀입니당', 'contents', 'txt').box.S('width',500,'left',$e.x,'top',$e.y)"
+            bs.Ui('dialog', 'title', '타이틀입니당', 'contents', txt).box.S('width', 500, 'left', $e.x, 'top', $e.y)
+        }, '<', panelContents)
+        bs.Ui('button', 'default').S('@value', '다이얼로그 띄우기(중앙)', 'mousedown', function($e){
+            var txt="bs.Ui('dialog', 'title', '타이틀입니당', 'contents', 'txt').box.S('width',500)"
+            bs.Ui('dialog', 'title', '타이틀입니당', 'contents', txt).box.S('width', 500)
+        }, '<', panelContents)
+        bs.Dom('<div>반환구조</div>').S('<', panelContents, 'margin-top', 10)
+        bs.Dom('<div>box<br><br></div>').S('<', panelContents, '@class', 'exBase',
+                '>', bs.Dom('<div>titleBox<br><br></div>').S('@class', 'exBase',
+                        '>', bs.Dom('<div>title</div>').S('@class', 'exBase', 'float', 'left', 'this'),
+                        '>', bs.Dom('<div>close</div>').S('@class', 'exBase', 'float', 'right', 'this'),
+                        '>', bs.Dom('<div></div>').S('clear', 'both', 'this'),
+                        'this'
+                ),
+                '>', bs.Dom('<div></div>').S('html', 'contents', '@class', 'exBase', 'this')
+        )
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // 알러트
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        panel = bs.Ui('panel','default','title@알러트박스')
+        panel.box.S('<',target)
+        panelContents =panel.contents
+        bs.Dom('<div></div>').S('<', panelContents, 'html',
+                '<li>bs.Ui("alert","success")</li>'+
+                        '<li>bs.Ui("alert","info")</li>'+
+                        '<li>bs.Ui("alert","warning")</li>'+
+                        '<li>bs.Ui("alert","danger")</li>'+
+                        "<li> Alert의경우 alert-success 같은 클래스네임을 alert-를 빼고 success만 설정하시면됩니다.</li>"
+                , 'display', 'block', 'padding', '0px 0px 10px 0px')
+        panelContents.S(
+                '>', bs.Ui('alert', 'success').S('html', "<b>Success!</b>  Best check yo self, you're not looking too good.", 'this'),
+                '>', bs.Ui('alert', 'info').S('this').S('html', "<b>info!</b>  Best check yo self, you're not looking too good.", 'this'),
+                '>', bs.Ui('alert', 'warning').S('html', "<b>warning!</b>  Best check yo self, you're not looking too good.", 'this'),
+                '>', bs.Ui('alert', 'danger').S('html', "<b>danger!</b>  Best check yo self, you're not looking too good.", 'this')
+        )
+        bs.Dom('<div></div>').S('<', panelContents, 'margin-top', 10)
+        target.S('>', bs.Dom('<div><a href="https://github.com/projectBS/bsJS/"><img src="ui/res/logo.png"></a></div>').S('background', '#333', 'padding', 20, 'border-radius', 10, 'this'))
+    }
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//bs.Ui 프로토타입단계
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bs.Ui=(function() {
+    function cssLoad() {
+        var headID=document.getElementsByTagName("head")[0],css=document.createElement('link');
+        css.type='text/css',css.rel='stylesheet',css.href=arguments[0]
+        if(arguments[1]) css.id=arguments[1]
+        headID.appendChild(css);
+        return css
+    }
+
+    cssLoad('//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css');
+    var theme=cssLoad('//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css','__bsTheme');
+    return function() {
+        var add=arguments[1] ? arguments[1] : '',pre=" "
+        switch(arguments[0]){
+            case 'button' : pre=' btn-' ;break
+            case 'label' : pre=' label-' ;break
+            case 'buttonIcon' : pre=' btn-';break
+            case 'buttonGroup' : pre=' btn-group-';break
+            case 'inputGroup' : pre=' input-group-';break
+            case 'alert' : pre=" alert-" ;break
+            case 'panel' : pre=" panel-" ;break
+        }
+        var etcs = {}
+        for(var i=1; i < arguments.length; i++) arguments[i].indexOf('@')>-1 ? etcs[arguments[i].split('@')[0]]=arguments[i].split('@')[1] : add+=pre + arguments[i] ;
+        switch(arguments[0]) {
+            case 'theme' :theme.setAttribute('href',arguments[1])
+                return
+            case 'icon' :return bs.Dom('<span></span>').S('@class','glyphicon glyphicon-' + add,'this')
+            case "form" :return bs.Dom('<form></form>').S('@class',add,'this')
+            case "submit" :return bs.Dom('<input type="submit"/>').S('@class','btn btn-' + add,'this')
+            case "reset" :return bs.Dom('<input type="reset"/>').S('@class','btn btn-' + add,'this')
+            case "text" :return bs.Dom('<input type="text"/>').S('@class','form-control','@placeholder','textField','this')
+            case "email" :return bs.Dom('<input type="email"/>').S('@class','form-control','@placeholder','email','this')
+            case "password" :return bs.Dom('<input type="password"/>').S('@class','form-control','@placeholder','password','this')
+
+
+            case "panel" :
+                etcs['title'] = etcs['title'] ? etcs['title'] : ''
+                etcs['contents'] = etcs['contents'] ? etcs['contents'] : ''
+                var box =  bs.Dom('<div></div>').S('@class','panel '+add,'this')
+                var title = bs.Dom('<div class="panel-heading"">'+etcs['title']  +'</div>')
+                var contents = bs.Dom('<div class="panel-body">'+etcs['contents']+'</div>')
+                box.S('>', title,'>', contents,'this')
+                return {box:box,title:title,contents:contents}
+
+            case "label" :return bs.Dom('<span></span>').S('@class','label '+add,'this')
+            case "badge" :return bs.Dom('<span class="badge"></span>')
+
+            case "inputGroup" :return bs.Dom('<div></div>').S('@class','input-group ' + add,'this')
+            case "inputAddon" :return bs.Dom('<div class="input-group-addon"></div>')
+
+            case "buttonToolbar" :return bs.Dom('<div class="btn-toolbar" role="toolbar"></div>')
+            case "buttonGroup" :return bs.Dom('<div></div>').S('@class','btn-group ' + add,'this')
+            case "button" :return bs.Dom('<input type="button"/>').S('@class','btn btn-' + add,'this')
+            case "buttonIcon" : {
+                var result = bs.Dom('<button type="button"></button>').S('@class','btn btn-' + add,'html','<span class="glyphicon glyphicon-'+etcs['icon']+'"></span>','this')
+                return result
+            }
+            case "alert" :return bs.Dom('<div></div>').S('@class','alert alert-' + add,'this')
+            case "dialog" :
+                //TODO 다이알로그 일단 구현해보자 -0-
+                //TODO 부트스트랩 IE7에서 먼가 렌더링문제가 -_- 있는듯한데?
+                var result={box: bs.Dom('<div></div>').S(
+                        '<', bs.Dom('body'),
+                        'left', document.documentElement.offsetWidth / 2,
+                        'top', (window.pageYOffset ? window.pageYOffset : document.documentElement.scrollTop) + document.documentElement.clientHeight / 2,
+                        'border', '1px solid #eee', 'border-radius', 5, 'user-select', 'none', 'position', 'absolute', 'box-shadow', '0px 0px 20px 0px rgba(50, 50, 50, 0.75)',
+                        'this'
+                ), contents: []}, t0=arguments, t1, startX, startY, x, y, move={}
+                var titleBox=bs.Dom('<div></div>').S(
+                        '>', bs.Dom('<div>X</div>').S('float', 'right', 'mousedown', function() {titleBox.S('mousedown', null), result.box.S(null)}, 'this'),
+                        '<', result.box,
+                        'cursor', 'pointer', 'user-select', 'none', '@class', 'btn btn-default', 'width', '100%', 'padding', 10, 'user-select', 'none', 'font-size', 16,
+                        'border-bottom-right-radius', 0, 'border-bottom-left-radius', 0,
+                        'mousedown', function($e) {
+                            startX=$e.event.offsetX||$e.lx, startY=$e.event.offsetY||$e.ly, x=$e.x, y=$e.y
+                            bs.Dom('body').S('mousemove', function($e) {x=$e.x, y=$e.y})
+                            move.ANI=function() {result.box.S('left', x - startX, 'top', y - startY)}
+                            bs.ANI.ani(move)
+                            bs.Dom('body').S(
+                                    'mouseup', function() {
+                                        move.ANI=function() {return true}
+                                        bs.Dom('body').S('mousemove', null)
+                                    }
+                            )
+                        },
+                        'this'
+                )
+                result.titleBox = titleBox
+                var t2={
+                    title:bs.Dom('<div></div>').S('<', titleBox, 'float', 'left', 'this'),
+                    contents:bs.Dom('<div></div>').S('<', result.box, 'background', '#fff', 'width', '100%', 'user-select', 'none', 'border-top-right-radius', 0, 'border-top-left-radius', 0, 'padding', 15, 'this')
+                }
+                titleBox.S('>', bs.Dom('<div style="clear:both"></div>'))
+                for(i=1; i<t0.length; i++) t2[t1=t0[i]] ? result.contents.push(t2[t1].S('html', t0[++i], 'this')) : ++i
+                return result
+            // 음확장해볼까..
+            default  :
+                return bs.Dom('<input type=""'+arguments[0]+'"/>').S('@class', 'form-control', '@value', arguments[0], 'this')
+
+
+        }
+    }
+})()
+</script>
+</body>
+</html>

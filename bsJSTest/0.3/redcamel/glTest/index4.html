@@ -1,0 +1,259 @@
+﻿<html>
+<head>
+<title>텍스쳐를 발라보아...</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<!--매트릭스 라이브러리 가지고옵니다-->
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<!--쉐이더 코드 입력합니다-->
+<script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform sampler2D uSampler; // 샘플러 상수로 선언하고
+        varying vec2 vTextureCoord; // 텍스트 코디네이터 정보..즉 유브이가됨...
+        varying vec4 vColor; // 컬러도 기존에 작업했으니...합쳐셔...라이팅처럼 가지뭐 -_-
+
+        void main(void) {
+          vec4 prev = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)); // 샘플러에서 받아오고 저장함..
+          prev = vec4(prev.rgba * vColor); // 컬러랑 더해줌
+          gl_FragColor = prev; // 프레그먼크 컬러내보냄
+        }
+    </script>
+<!--쉐이더 코드 입력합니다-->
+<script id="shader-vs" type="x-shader/x-vertex">
+        // 하....머리속에 아직 제대로 안들어옵니다 -_-
+        attribute vec3 aVertexPosition;
+        attribute vec2 aTextureCoord;
+
+        uniform vec4 aColor;
+        uniform mat4 uMVMatrix;
+        uniform mat4 uPMatrix;
+
+        varying vec2 vTextureCoord;
+        varying vec4 vColor;
+
+        void main(void) {
+            gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+            vTextureCoord = aTextureCoord;
+            vColor = aColor;
+        }
+    </script>
+<script type="text/javascript">
+var gl;
+// 지엘 초기화
+function initGL(canvas) {
+    gl=canvas.getContext('webgl')||canvas.getContext("experimental-webgl");
+    console.log(gl)
+    if(gl==undefined) return alert('지원안되!')
+    gl.viewportWidth = canvas.width,gl.viewportHeight = canvas.height;
+}
+
+// 자바스크립트로 쉐이더 만들고 지퓨한테 컴파일만 맡깁니다.
+function getShader(gl, id) {
+    var shaderScript = document.getElementById(id);
+    if (!shaderScript) return null;
+    var str = "",k = shaderScript.firstChild;
+    while (k) {
+        if (k.nodeType == 3) str += k.textContent;
+        k = k.nextSibling;
+    }
+
+    var shader;
+    if (shaderScript.type == "x-shader/x-fragment") shader = gl.createShader(gl.FRAGMENT_SHADER);
+    else if (shaderScript.type == "x-shader/x-vertex") shader = gl.createShader(gl.VERTEX_SHADER);
+    else return null;
+    gl.shaderSource(shader, str),gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return alert(gl.getShaderInfoLog(shader));
+    return shader;
+}
+
+var shaderProgram;
+function initShaders() {
+    var fragmentShader = getShader(gl, "shader-fs"),vertexShader = getShader(gl, "shader-vs");
+    shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) alert("Could not initialise shaders");
+
+    gl.useProgram(shaderProgram);
+
+    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+    gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+    shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+    gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+
+    shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+    shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
+    shaderProgram.color = gl.getUniformLocation(shaderProgram, "aColor");
+
+    // UV 상수 연결합니다.
+    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+}
+
+var mvMatrix = mat4.create(),pMatrix = mat4.create();
+function setMatrixUniforms() {gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix),gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix)}
+
+// 하..버퍼가 나왔음...
+var vertexBuffer;
+var uvBuffer;
+var indexBuffer
+function initBuffers() {
+    vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    var vertices = [
+        -1.0, -1.0,  0,
+        1.0, -1.0,  0,
+        1.0,  1.0,  0,
+        -1.0,  1.0,  0
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    vertexBuffer.itemSize = 3;
+    vertexBuffer.numItems = 4;
+
+    // 유브이 버퍼 등장
+    // 음 이건 텍스쳐를 어케 그릴꺼냐에 대한건데...
+    // 유브이 버퍼랑 이것저것 합쳐서 필터를 맹글수도 있지요 -0-
+    uvBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    vertices = [
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    uvBuffer.itemSize = 2;
+    uvBuffer.numItems = 4;
+
+    // 인덱스 버퍼도 등장..
+    // 인덱스 버퍼는 삼각형을 어떤순서로 그릴꺼냐 인데..
+    indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    // 우리는 삼각형두개를 아래와 같은 순서로 그려서..사각형을 그릴생각입니다.
+    vertices =[0, 1, 2, 0, 2, 3]
+    // 음 ELEMENT_ARRAY_BUFFER이놈의 정확한 의미는 아직모르겠으나...
+    // 머 하나의 오브젝으로 인식하고 때리는것 같은...(이걸 묶어서..어케 드로우 콜을 줄일수도 있을듯한 생각이 듭니다 -_-
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertices), gl.STATIC_DRAW);
+    indexBuffer.itemSize = 1;
+    indexBuffer.numItems = 6;
+}
+
+
+// 드디어 그립니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+var time=0
+function drawScene() {
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+    // 센터놈 그리기
+    time +=0.01
+    mat4.identity(mvMatrix);
+    mat4.translate(mvMatrix, [0.0, 0.0, -7]);
+    mat4.rotateY(mvMatrix,time)
+    mat4.rotateX(mvMatrix,time)
+    mat4.rotateZ(mvMatrix,time)
+
+    setMatrixUniforms();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.uniform4fv(shaderProgram.color, [Math.random(),Math.random(),Math.random(),Math.random()]);
+
+    //  uv버퍼 등록
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, uvBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    // 샘플러 등록
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, testTexture);
+    gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+    // 인덱스 버퍼 등록
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.drawElements(gl.TRIANGLES, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+    // 오백개나 때려봅시다.
+    for(var i=0; i<500; i++){
+        mat4.identity(mvMatrix);
+        mat4.translate(mvMatrix, [Math.sin(time+i)*15, Math.cos(time+i)*15, -30-i/4]);
+        mat4.rotateY(mvMatrix,time+i)
+        mat4.rotateX(mvMatrix,time+i)
+        mat4.rotateZ(mvMatrix,time+i)
+
+        setMatrixUniforms();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.uniform4fv(shaderProgram.color, [Math.random(),Math.random(),Math.random(),Math.random()]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, uvBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        // 상태머신상에서 유지하고 있으므로 걍 다시 등록안합니다...
+        // 개별적으로 재질이 다르다면 매번 변경해야것지요..
+//        gl.activeTexture(gl.TEXTURE0);
+//        gl.bindTexture(gl.TEXTURE_2D, testTexture);
+//        gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.drawElements(gl.TRIANGLES, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+}
+
+function webGLStart() {
+    var canvas = document.getElementById("lesson01-canvas");
+    // 캔버스에서 웹지엘 컨텍스트를 받아오고..
+    initGL(canvas);
+    // 버텍스쉐이더랑 프레그먼트 쉐이더를 짭니당
+    initShaders();
+    // 버퍼도 세팅해야겠습니다...쉐이더가 가지고 놀...뭐 배열값 -_-? 버그런거지용..
+    initBuffers();
+
+    // 텍스쳐를 미리 하나 세팅해보아..
+    initTexture();
+
+    // 깨끗하게 정리해주고..
+    gl.clearColor(0,0,0, 1.0);
+    // 뎁스테스트는 지퓨에게 맏깁니다..
+    gl.enable(gl.DEPTH_TEST);
+
+    // 루프시켜줍니다...그럼 렌더링이되지요 우린 60프레임 날립니다~
+    setInterval(drawScene,16)
+}
+
+
+
+// 귀찮으니 텍스쳐로 쓸 이미지를 먼저 박아둡니다..
+// initTexture와 bindTexture가 잘합쳐지면
+// 얼터네이티바나 어웨이에서 보던 비트맵재질의 기초가 됩니다...
+
+var testTexture;
+function initTexture() {
+    testTexture = gl.createTexture();
+    testTexture.image = new Image();
+    testTexture.image.onload = function () {bindTexture(testTexture)}
+    testTexture.image.src = "test.png";
+}
+
+function bindTexture(texture) {
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+    // 머이건 어떻게 이미지를 보간할꺼냐에 대한건데...기억이 잘안나므로 일단 패스 -_-
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+//    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //Prevents s-coordinate wrapping (repeating).
+//    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); //Prevents t-coordinate wrapping (repeating).
+    gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+///////////////////////////
+// 알파는 어케하지 -_-;;
+
+</script>
+</head>
+<body onload="webGLStart();">
+<canvas id="lesson01-canvas" style="border: none;" width="1260" height="800"></canvas>
+</body>
+</html>

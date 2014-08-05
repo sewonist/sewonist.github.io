@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test image canvas</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="border:1px solid #000"></canvas>
+<script>
+    (function (start){
+        var images = [], loadCount = 0,
+                i, j, img,
+                onload = function (){++loadCount==images.length?start(images):console.log(loadCount);};
+
+        for(i=0, j=5; i<j; i++)
+            (images[i] = img = new Image).onload = onload,
+                    img.src = 'http://www.bsidesoft.com/hika/s58/' + i + '.png';
+    })(function(images){
+        var canvas = document.getElementById( 'canvas'),
+             context = canvas.getContext('2d');
+        images.forEach(function(img, idx){
+            context.save();
+            context.drawImage(img, (idx*img.width), 0, img.width, img.height);
+            context.restore();
+        });
+    });
+</script>
+</body>
+</html>

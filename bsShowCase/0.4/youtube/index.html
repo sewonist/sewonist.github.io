@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>youtube 쥬크박스</title>
+<meta charset="utf-8"/>
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<div id='playerBox'>
+	<div id="leftDiv">
+		<div id="player"></div>
+		<div id="controlBox">
+			<div>
+				<button id="prevPL" class="pure-button">
+					<i class="fa fa-fast-backward"></i>
+				</button>
+				<button id="play" class="pure-button">
+					<i class="fa fa-play fa-lg"></i>
+				</button>
+				<button id="nextPL" class="pure-button">
+				    <i class="fa fa-fast-forward"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div id="rightDiv">
+		<div id="searchlist" hidden>
+			<form class='pure-form' id='search' onsubmit='return false;'>
+				<input type="text" id="q"/>
+				<button class="pure-button pure-button-primary">
+			    <i class="fa fa-search fa-lg"></i>
+				</button>
+				<button id="btPlaylist" type="button" class="pure-button pure-button-primary">
+			    <i class="fa fa-floppy-o fa-lg"></i>
+				</button>
+			</form>
+			<ul id='searchResults'></ul>
+		</div>
+		<div id="playlist">
+			<div>
+				<button id="btTrash" type="button" class="pure-button pure-button-primary">
+				  <i class="fa fa-trash-o fa-lg"></i>
+				</button>
+			</div>
+			<ul id='playlists'></ul>
+		</div>
+	</div>
+	<div id="menuDiv" class="pure-menu pure-menu-open pure-menu-horizontal">
+		<ul>
+			<li id='tabPlayList' class="pure-menu-selected">
+				<a href="javascript:void(0);"><i class="fa fa-list-ul fa-lg"></i>&nbsp;Play List</a>
+			</li>
+			<li id='tabSearch'>
+				<a href="javascript:void(0);"><i class="fa fa-search fa-lg"></i>Search</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="http://projectbs.github.io/bsJS/bsjs.0.4.js"></script>
+<script src="./youtube.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage">
+<form data-bsview="f0">
+	<input type="checkbox" name="cb0" id="cb0_0" value="0"/><label for="cb0_0">check0</label>
+	<input type="checkbox" name="cb0" id="cb0_1" value="1"/><label for="cb0_1">check1</label>
+	<input type="checkbox" name="cb0" id="cb0_2" value="2"/><label for="cb0_2">check2</label>
+</form>
+</div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../../bsJS/bsjs.0.5.js"></script>
+<script src="../../../bsJStest/bsTest.js"></script>
+<script src="../../../bsJStest/0.5/printer.js"></script>
+<script src="../bsUI.0.1.js"></script>
+<script>
+bs.debug(1);
+
+bs.plugin( 'ui' ),
+//bs.plugin( 'vdom' );
+bs( function(){
+	var forms = {}, t0, t1, i, j, k, l;
+	for( i = 0, j = bs.Dom('[data-bsview]').length ; i < j ; i++ ){
+		forms[bs.Dom('[data-bsview]').S( i, '*bsview' )] = t0 = bs.Dom('[data-bsview]')[i];
+		t0 = bs.Dom(t0).S('>');
+		for( k = 0, l = t0.length ; k < l ; k++ ){
+			( t1 = bs.Dom(t0[k]) ).S( 'display', 'none' );
+			switch( t1.S('@tagName').toLowerCase() ){
+			case'input':
+				switch( t1.S('@type').toLowerCase() ){
+				case'checkbox':
+					t1.S( 'after', bs.Dom('<div></div>').S('html', 'check', 'display', 'inline', '*bsview-item', 'aaa', 'this' ) );
+				}
+				break;
+			case'textarea':
+			case'select':
+			case'label':
+			}
+		}
+	}
+        
+        bs.UI.toast( '<div class="msg">Hello<br>bsUI - toast~</div>', .3 );
+        bs.UI.spin();
+
+//	bs.Vdom.test();
+} );
+</script>
+</body>
+</html>

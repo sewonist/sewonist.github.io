@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bs5 Test suite</title>
+    <meta name="keywords" content="bs5" />
+    <meta name="description" content="bs5 Test suite" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+    <link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage">
+    <form data-bsview="f0">
+        <input type="checkbox" name="cb0" id="cb0_0" value="0"/><label for="cb0_0"> label0</label>
+        <input type="checkbox" name="cb0" id="cb0_1" value="1"/><label for="cb0_1"> label1</label>
+        <input type="checkbox" name="cb0" id="cb0_2" value="2"/><label for="cb0_2"> label2</label>
+    </form>
+</div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../../bsJS/bsjs.0.5.js"></script>
+<script src="../../../bsJStest/bsTest.js"></script>
+<script src="../../../bsJStest/0.5/printer.js"></script>
+<script>
+    bs.debug(1);
+    //bs.plugin( 'vdom' );
+    bs( function(){
+        var forms = {}, t0, t1, i, j, k, l;
+        for( i = 0, j = bs.Dom('[data-bsview]').length ; i < j ; i++ ){
+            forms[bs.Dom('[data-bsview]').S( i, '*bsview' )] = t0 = bs.Dom('[data-bsview]')[i];
+            t0 = bs.Dom(t0).S('>');
+            for( k = 0, l = t0.length ; k < l ; k++ ){
+                //( t1 = bs.Dom(t0[k]) ).S( 'display', 'none');
+                t1 = bs.Dom(t0[k]);
+                switch( t1.S('@tagName').toLowerCase() ){
+                    case'input':
+                        switch( t1.S('@type').toLowerCase() ){
+                            case'checkbox':
+                                t1.S('change', nativeCheckboxHandler, 'focus', nativeCheckboxHandler, 'blur', nativeCheckboxHandler,
+                                        'opacity', '0', 'width', '0px', 'height', '0px',
+                                        'after', bs.Dom('<div></div>').S('click', bsCheckboxHandler, 'html', 'check', 'border', 'solid', 'display', 'inline', '*bsview-item', 'aaa', 'this' ) );
+                        }
+                        break;
+                    case'textarea':
+                    case'select':
+                    case'label':
+                }
+            }
+        }
+
+        function nativeCheckboxHandler(e){
+            var t = bs.Dom(bs.Dom(this).S('after'));
+            switch( e.type ){
+                case'change':
+                    t.S('html', 'check : ' + this.checked);
+                    break;
+                case'focus':
+                    t.S('border-color', '#f00');
+                    break;
+                case'blur':
+                    t.S('border-color', '#000');
+                    break;
+            }
+        }
+
+        function bsCheckboxHandler(e){
+            var t = bs.Dom(this).S('before');
+            switch( e.type ){
+                case'click':
+                    t.checked = !t.checked;
+                    var event = document.createEvent('Event');
+                    event.initEvent('change', true, true);
+                    t.dispatchEvent(event);
+                    t.focus();
+                    break;
+            }
+        }
+
+//	bs.Vdom.test();
+    } );
+</script>
+</body>
+</html>

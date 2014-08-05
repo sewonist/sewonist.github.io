@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bs5 Test suite</title>
+    <meta name="keywords" content="bs5" />
+    <meta name="description" content="bs5 Test suite" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+    <link rel="shortcut icon" href="../bs/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage"></div>
+<br clear="both">
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+<script src="../bsTest.js"></script>
+<script src="./printer.js"></script>
+<script>
+    bs( function(){
+        bsTest.tear( 'bsTest', function(){
+            testFunc = function() {
+                var noReturn = 'this function has no return value.';
+            };
+            testDate = new Date;
+            testRegExp = /test/;
+            testError = new Error( 'test' );
+            testObj = {name:'test', func:testFunc, date:testDate, regExp:testRegExp, error:testError};
+            testArray = ['this', 'is', 'test', testFunc, testDate, testRegExp, testError, testObj];
+        } );
+
+        bsTest( 'default',
+            'number', 100, 100,
+            'string', 'string', 'string',
+            'bool', true, true,
+            'function', testFunc, testFunc,
+            'object', testObj, testObj,
+            'array', testArray, testArray,
+            'null', null, null,
+            'undefined', undefined, undefined,
+            'date', testDate, testDate,
+            'RegExp', testRegExp, testRegExp,
+            'Error', testError, testError
+        );
+
+        bsTest( 'bsTest.NOT',
+            'number', bsTest.NOT(200), 100,
+            'string', bsTest.NOT( 'number' ), 'string',
+            'bool', bsTest.NOT( false ), true,
+            'function', bsTest.NOT( testFunc ), function() { var noReturn = 'this function has no return value.'; },
+            'object', bsTest.NOT( testObj ), {name:'test', func:testFunc, date:testDate, regExp:testRegExp, error:testError},
+            'array', bsTest.NOT( testArray ), ['this', 'is', 'test', testFunc, testDate, testRegExp, testError, testObj],
+            'null', bsTest.NOT( null ), testObj,
+            'undefined', bsTest.NOT( undefined ), testObj,
+            'date', bsTest.NOT( testDate ), new Date,
+            'RegExp', bsTest.NOT( testRegExp ), /test/,
+            'Error', bsTest.NOT( testError ), new Error( 'test' )
+        );
+
+        bsTest( 'bsTest.IN',
+            'number', bsTest.IN( 100, 200 ), 100,
+            'string', bsTest.IN( 'string', 'number' ), 'string',
+            'bool', bsTest.IN( true, false ), true,
+            'function', bsTest.IN( testFunc, function() { var noReturn = 'this function has no return value.'; } ), testFunc,
+            'object', bsTest.IN( testObj, {name:'test', func:testFunc, date:testDate, regExp:testRegExp, error:testError} ), testObj,
+            'array', bsTest.IN( testArray, ['this', 'is', 'test', testFunc, testDate, testRegExp, testError, testObj] ), testArray,
+            'null', bsTest.IN( null, testObj ), null,
+            'undefined', bsTest.IN( undefined, testObj ), undefined,
+            'date', bsTest.IN( testDate, new Date ), testDate,
+            'RegExp', bsTest.IN( testRegExp, /test/ ), testRegExp,
+            'Error', bsTest.IN( testError, new Error( 'test' ) ), testError
+        );
+
+        bsTest( 'bsTest.RANGE',
+            'number', bsTest.RANGE( 100, 200 ), 100,
+            'number', bsTest.RANGE( 200, 100 ), 100,
+            'number', bsTest.RANGE( -100, 100 ), 100,
+            'number', bsTest.RANGE( 100, -100 ), 100,
+            'string', bsTest.RANGE( 'a', 'z' ), 'a',
+            'string', bsTest.RANGE( 'z', 'a' ), 'a',
+            'date', bsTest.RANGE( testDate, new Date ), testDate,
+            'date', bsTest.RANGE( new Date, testDate ), testDate
+        );
+    } );
+</script>
+</body>
+</html>

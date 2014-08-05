@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+<style type="text/css">
+	input{
+		border:1px solid green;
+	}
+	.tng{
+		border:1px solid red;
+	}
+</style>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../bsTest.js"></script>
+<script src="./printer.js"></script>
+ip
+<input id='ip_OK1' type='text' value='255.255.255.255'>
+<input id='ip_OK2' type='text' value='0.0.0.0'>
+<input class='tng' id='ip_NG1' type='text' value='256.256.256.256'>
+<br/>
+url
+<input id='url_OK1' type='text' value='http://google.com'>
+<input id='url_OK2' type='text' value='https://www.google.com'>
+<input class='tng' id='url_NG1' type='text' value='ftp://www.google.com'>
+<br/>
+email
+<input id='email_OK' type='text' value='gmail@gmail.com'>
+<input class='tng' id='email_NG' type='text' value='gmail.gmail.com'>
+<br/>
+korean
+<input id='korean_OK' type='text' value='가나다라마바사'>
+<input class='tng' id='korean_NG' type='text' value='가나다ABCabc123'>
+<br/>
+japanese全角
+<input id='japanese_OK' type='text' value='あいうえお日本語ニホンゴ'>
+<input class='tng' id='japanese_NG' type='text' value='가나다ABCabc123'>
+<br/>
+japanese全角記号
+<input id='japaneseKigo_OK' type='text' value='～「」＋－！＠＃＄％＾＆＊（）：'>
+<br/>
+japanese全角数字
+<input id='japaneseSuuji_OK' type='text' value='１２３４５６７８９０'>
+<br/>
+japanese半角
+<input id='japaneseHan_OK' type='text' value='ｱｲｳｴｵ'>
+<br/>
+alpha
+<input id='alpha_OK' type='text' value='abcdxyz'>
+<input class='tng' id='alpha_NG' type='text' value='abcdxyz123'>
+<br/>
+ALPHA
+<input id='ALPHA_OK' type='text' value='ABCDXYZ'>
+<input class='tng' id='ALPHA_NG' type='text' value='ABCxyz'>
+<br/>
+num
+<input id='num_OK' type='text' value='0123456789'>
+<input class='tng' id='num_NG' type='text' value='0123.456789'>
+<br/>
+alphanum
+<input id='alphanum_OK' type='text' value='0123456789abcdxyz'>
+<br/>
+1alpha
+<input id='_1alpha_OK' type='text' value='abcdxyz0123456789'>
+<input class='tng' id='_1alpha_NG' type='text' value='.abcdxyz0123456789'>
+<br/>
+1ALPHA
+<input id='_1ALPHA_OK' type='text' value='ABCDXYZ0123456789'>
+<br/>
+float
+<input id='float_OK' type='text' value='0.123456789'>
+<br/>
+int
+<input id='int_OK' type='text' value='1234567890'>
+<br/>
+length
+<input id='length_OK' type='text' value='123456789012345678901234567890'>
+<br/>
+range
+<input id='range_OK' type='text' value='99'>
+<br/>
+indexOf
+<input id='indexOf_OK' type='text' value='123ABC456'>
+<br/>
+<script>
+bs.plugin( 'test', 'last' );
+bs( function(){
+	bsTest.tear( 'test init', function(){
+		bs.Dom( '<input id="id" type="text" value="hika00"/>' ).S('<','#stage' );
+		bs.Dom( '<input id="pw" type="text" value="hika00"/>' ).S('<','#stage' );
+
+		// Define RULEs
+		bs.test( 'rule',
+			'Falpha', '/^[a-z]/',
+			'alpha', '/^[a-z]+$/',
+			'num', '/^[0-9]+$/',
+			'alphanum', '/^[a-z0-9]+$/',
+			'len', function( $val, $arg ){
+				return $val.length == parseInt( $arg[0] );
+			},
+			'l6', function( $val, $arg ){
+				return $val.length == 6;
+			}
+		);
+
+		// Define GROUPs
+		bs.test( 'group', 'group1',
+			'userid', '#id|@value',
+			'pw', '#pw|@value'
+		);
+		// Define SETs
+		bs.test( 'set',
+			'set1', 'userid, pw = Falpha AND alphanum'
+		);
+	} );
+	bsTest( 'test - SET & GROUP 0',
+		function(){
+			return bs.test( 'set1', '@group1' );
+		}, 1
+	);
+	bsTest( 'test - Runtime SET 0',
+		function(){
+			return bs.test( 'userid, pw = Falpha AND alphanum AND len|6', 'userid', '#id|@value', 'pw', '#pw|@value' );
+		}, 1,
+		function(){
+			return bs.test( 'or = len|4 OR l6', 'or', '#id|@value' );
+		}, 1
+	);
+
+	bsTest( 'test - ext. file SET',
+		function(){
+			return bs.test( 'bs.test.set.html', 'userid', '#id|@value', 'pw', '#pw|@value' );
+		}, 1
+	);
+	
+	bsTest( 'test - direct access to RULE',
+		function(){
+			return bs.test( '@len|6', '#id|@value', '#pw|@value' );
+		}, 1
+	);
+	bsTest( 'test - subset of bsJS RULEs OK',
+		function(){
+			return bs.test( '@ip', '#ip_OK1|' );
+		}, 1,
+		function(){
+			return bs.test( '@ip', '#ip_OK2|' );
+		}, 1,
+		function(){
+			return bs.test( '@url', '#url_OK1|' );
+		}, 1,
+		function(){
+			return bs.test( '@url', '#url_OK2|' );
+		}, 1,
+		function(){
+			return bs.test( '@email', '#email_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@korean', '#korean_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@japanese', '#japanese_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@japanese', '#japaneseKigo_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@japanese', '#japaneseSuuji_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@japanese', '#japaneseHan_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@alpha', '#alpha_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@ALPHA', '#ALPHA_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@num', '#num_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@alphanum', '#alphanum_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@1alpha', '#_1alpha_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@1ALPHA', '#_1ALPHA_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@float', '#float_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@int', '#int_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@length|30', '#length_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@range|1|100', '#range_OK|' );
+		}, 1,
+		function(){
+			return bs.test( '@indexOf|ABC', '#indexOf_OK|' );
+		}, 1
+	);
+	bsTest( 'test - subset of bsJS RULEs NG',
+		function(){
+			return bs.test( '@ip', '#ip_NG1|' );
+		}, undefined,
+		function(){
+			return bs.test( '@url', '#url_NG1|' );
+		}, undefined,
+		function(){
+			return bs.test( '@email', '#email_NG|' );
+		}, undefined,
+		function(){
+			return bs.test( '@korean', '#korean_NG|' );
+		}, undefined,
+		function(){
+			return bs.test( '@japanese', '#japanese_NG|' );
+		}, undefined,
+		function(){
+			return bs.test( '@alpha', '#alpha_NG|' );
+		}, undefined,
+		function(){
+			return bs.test( '@ALPHA', '#ALPHA_NG|' );
+		}, undefined,
+		function(){
+			return bs.test( '@num', '#num_NG|' );
+		}, undefined,
+		function(){
+			return bs.test( '@num', '#num_NG|' );
+		}, undefined
+		,
+		function(){
+			return bs.test( '@1alpha', '#_1alpha_NG|' );
+		}, undefined
+	);
+	
+} );
+</script>
+</body>
+</html>

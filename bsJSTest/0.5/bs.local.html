@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage" data-id="stageId" data-id2="stageId2">test stage</div>
+<div class="clsStage" style="display:none;">test stage1</div>
+<div class="clsStage" style="display:none;">test stage2</div>
+<div id="stageHika"></div>
+<div id="stageHtml"></div>
+<div id="stageSelected"></div>
+<div id="data"></div>
+<div id="before"></div>
+<div id="after"></div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.5.js"></script>
+<script src="../bsTest.js"></script>
+<script src="../0.5/printer.js"></script>
+<script>
+bs.debug(1);
+bs( function(){ 
+	bsTest( 'bs.local',
+		function(){
+			bs.local( 'test1', '안녕하세요#before!@#$ㄲㄹ' );
+			return bs.local( 'test1');
+		}, '안녕하세요#before!@#$ㄲㄹ'
+	),
+	bsTest( 'bs.compress',
+		function(){
+			var str = '안녕하세요#before!@#$ㄲㄹ';
+			console.log( 'plain', str.length );
+			str = bs.compress(str);
+			console.log( 'compressed', str.length );
+			return bs.decompress(str);
+		}, '안녕하세요#before!@#$ㄲㄹ'
+	),
+	bsTest( 'bs.model',
+		function(){
+			bs.model( 'test', '안녕하세요#before!@#$ㄲㄹ' );
+			return bs.model('test');
+		}, '안녕하세요#before!@#$ㄲㄹ'
+	);
+} );
+</script>
+</body>
+</html>

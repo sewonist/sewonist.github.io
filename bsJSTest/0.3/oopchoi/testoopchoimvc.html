@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test canvas image event mvc</title>
+</head>
+<body>
+<div>
+    <input type="button" id="start" value=" start "/>
+    <input type="button" id="stop" value=" stop "/>
+</div>
+<canvas id="canvas" width='500' height='500' style="width:500px; height:500px; border: 1px solid #000; display: block"></canvas>
+<script>
+    var Event, Model, Element, View,
+            toRadian, drawCanvas;
+
+    Event = function(){
+        this.listeners = [];
+    },
+            Event.prototype.addListener = function (type, listener){this.listeners[type]? this.listeners[type].push(listener) : (this.listeners[type]=[],this.listeners[type].push(listener));},
+            Event.prototype.removeListener = function (type, listener){this.listeners[type].splice(this.listeners[type].indexOf(listener),1), this.listeners[type].length==0?delete this.listeners[type]:null;},
+            Event.prototype.hasListener = function (type){return this.listeners[type];},
+            Event.prototype.dispatchEvent = function (type, data){this.listeners[type].forEach(function (e){e.call(this, data);});};
+
+    Model = function(){
+        this.constructor.call(this),
+                this.elements = [],
+                this._isUpdate = 0; // 1: 업데이트 준비, 0: 업데이트 완료
+    },
+            Model.prototype = new Event,
+            Model.prototype.addElement = function(element){this.elements.push(element);},
+            Model.prototype.removeElement = function(element){this.elements.splice(this.elements.indexOf(element), 1);},
+            Model.prototype.getElement = function(idx){return this.elements[idx];},
+            Model.prototype.numElements = function(){return this.elements.length},
+
+            Model.prototype.isUpdate = function(){return this._isUpdate;},
+            Model.prototype.update = function(){this._isUpdate = 1;},
+            Model.prototype.updated = function(){this._isUpdate = 0;};
+
+    Element = function(model, imgIndex){
+        this.constructor.call(this),
+                this.model = model,
+                this.attr = {x:0, y:0, centerX:0, centerY:0, rotate:0, radius:0, imgIndex:imgIndex};
+    },
+            Element.prototype = new Event,
+            Element.prototype.set = function(key, value){this.attr[key]=value, this.model.update()},    // element의 attr 값이 변경되면 모델을 update() 한다.
+            Element.prototype.get = function(key){return this.attr[key];};
+
+    View = function(canvas, images, model){
+        var self = this;
+        this.canvas = canvas,
+        this.images = images,
+        this.model = model,
+                this.canvasContext = this.canvas.getContext('2d'),
+                // 이벤트 담당 캔바스와 컨텍스트 생성
+                this.eventCanvas = document.createElement('canvas'),
+                this.eventCanvasContext = this.eventCanvas.getContext('2d'),
+
+                // 뷰, 이벤트 담당 캔바스 사이즈를 실제 캔바스 사이즈와 동일하게 초기화
+                this.eventCanvas.width = this.width = this.canvas.width,
+                this.eventCanvas.height = this.height = this.canvas.height,
+
+                this.mouseX = this.mouseY = this.isDowned = 0,  // 뷰 안에 마우스 속성을 0으로 초기화
+                this.eventStack = {down:[], up:[], move:[]},    // 마우스 상태에 따란 element를 스택에 저장
+
+                this.canvas.addEventListener('mousedown', function(e){self.isDowned = 1;}), // 마우스 다운 상태 1로 변경
+                this.canvas.addEventListener('mouseup', function(e){self.isDowned = 0;}),   // 마우스 다운 상태 0으로 변경
+                this.canvas.addEventListener('mousemove', function(e){  // 캔바스 내의 마우스 좌표를 뷰의 마우스 좌표에 할당
+                    self.mouseX = e.layerX, self.mouseY = e.layerY;
+                }),
+
+                this.data = {startTime:0, updateTime:0, frameCount:0},
+                // 매 프레임마다 시간을 업데이트 하고 model 객체로 부터 render 이벤트를 디스패치 한 후, 드로잉 한다.
+                this.render = function(){
+                    var data = self.data;
+                    data.updateTime = Date.now() - data.startTime,
+                            data.frameCount++,
+                            self.model.dispatchEvent('render', data),
+                            self.draw();
+                }
+    },
+    toRadian = 2 * Math.PI / 360,
+    drawCanvas = function(canvasContext, element, img){
+        canvasContext.save();
+        canvasContext.translate( element.get('x'), element.get('y') );
+        if( element.get('rotate') ){
+            canvasContext.translate( element.get('centerX'), element.get('centerY') );
+            canvasContext.rotate( toRadian * element.get('rotate') );
+            canvasContext.translate( -element.get('centerX'), -element.get('centerY') );
+        }
+
+        canvasContext.drawImage( img, 0, 0, img.width, img.height );
+        canvasContext.restore();
+    },
+
+            View.prototype.draw = function(){
+                var model, element, img, canvasContext,
+                        eventCanvasContext, eventDownListener, eventUpListener, eventMoveListener, eventStack,
+                        i,j;
+                model = this.model;
+                if(!model.isUpdate()) return;
+                model.updated(),
+                        canvasContext = this.canvasContext,
+                        canvasContext.clearRect(0, 0, this.width, this.height),
+                        // 이벤트 스택 정보를 모두 초기화 한다.
+                        eventStack = this.eventStack, eventStack.down.length = eventStack.up.length = eventStack.move.length = 0;
+
+                // element 갯수 만큼 반복
+                for(i=0, j=model.numElements(); i<j; i++){
+                    element = model.getElement(i),
+                            img = this.images[element.get('imgIndex')],
+                            // 성능 때문에 img.addEventListener() 를 하지 않는다.
+                            eventDownListener = this.isDowned == 1 && element.hasListener('down'),
+                            eventUpListener = this.isDowned && element.hasListener('up'),
+                            eventMoveListener = this.isDowned == 0 && element.hasListener('move');
+                    if(eventDownListener||eventUpListener||eventMoveListener){
+                        eventCanvasContext = this.eventCanvasContext,
+                                eventCanvasContext.clearRect(0, 0, this.width, this.height),
+                                drawCanvas(eventCanvasContext, element, img);
+                        // 마우스 영역의 1픽셀을 얻어와서 알파 값이 220보다 크다면
+                        if(eventCanvasContext.getImageData(this.mouseX, this.mouseY, 1, 1).data[3]>220){
+                            if(eventDownListener) eventStack.down.push(element);
+                            if(eventUpListener) eventStack.up.push(element);
+                            if(eventMoveListener) eventStack.move.push(element);
+                            console.log('down:' + eventStack.down.length),
+                                    console.log('up:' + eventStack.up.length),
+                                    console.log('move:' + eventStack.move.length);
+                        }
+                    }
+
+                    drawCanvas(canvasContext, element, img);
+                }
+                // element.dispatchEvent() : 매 프레임 마다 이벤트 스택에 element가 존재한다면 dispatch 된다.
+                i = eventStack.down.length;
+                while(i--) this.eventStack.down[i].dispatchEvent( 'down', {type:'down', target:this.eventStack.down[i], x:this.mouseX, y:this.mouseY} ), this.isDowned = -1;
+                i = eventStack.up.length;
+                while(i--) this.eventStack.down[i].dispatchEvent( 'up', {type:'up', target:this.eventStack.up[i], x:this.mouseX, y:this.mouseY} );
+                i = eventStack.move.length;
+                while(i--) this.eventStack.down[i].dispatchEvent( 'move', {type:'move', target:this.eventStack.move[i], x:this.mouseX, y:this.mouseY} );
+            },
+            View.prototype.start = function(){
+                this.data.startTime = Date.now();
+                this.timer = setInterval(this.render, 16);
+            },
+            View.prototype.end = function(){
+                clearInterval(this.timer);
+            };
+
+    // 시작 ------------------------------------------------------------------------------------
+    (function (init){
+        var images = [], loadCount = 0,
+                i, j, img,
+                onload = function (){++loadCount==images.length?init(images):console.log(loadCount);};
+
+        for(i=0, j=5; i<j; i++)
+            (images[i] = img = new Image).onload = onload,
+                    img.src = 'http://www.bsidesoft.com/hika/s58/' + i + '.png';
+    })(function (images){
+        var model, view, element, elementDownListener,
+                i, j, x, y;
+
+        model = new Model,
+                // 매 프레임마다 시간 데이터가 업데이트 되고 인자로 data 객체가 들어온다.
+                model.addListener( 'render', function( e ){
+                    var r, d, cos, sin, i, j, k, element;
+                    cos = Math.cos( r = ( k = e.frameCount % 720 ) * toRadian * .5 ),
+                            sin = Math.sin( r ),
+                            i = view.model.numElements();
+                    while( i-- ){
+                        element = view.model.getElement( i ),
+                                r = element.get( 'radius' ),
+                                // 엘리먼트를 통해 얻어온 반지름 값을 이용해서 x, y 좌표를 지정한다.
+                                element.set( 'x', view.width / 2 + cos * r - 30 ),
+                                element.set( 'y', view.height / 2 + sin * r - 30 ),
+                                // 회전 각도는 k의 2배속 (자전 속도를 높임)
+                                element.set( 'rotate', k * 2 );
+                    }
+                } ),
+                view = new View( document.getElementById('canvas'), images, model ),
+                elementDownListener = function(e){
+                    console.log(e.target.get('imgIndex') + '.png' );
+                };
+        for( i = 0, j = images.length ; i < j ; i++ ){
+            model.addElement( element = new Element( model, i ) );
+            y = x = i * 30 + 250 + 30,
+                    element.set( 'x', x ),
+                    element.set( 'y', y ),
+
+                    x = view.width / 2 - x,
+                    x = x * x,
+                    y = view.height / 2 - y,
+                    y = y * y,
+                    element.set( 'radius', Math.sqrt( x + y ) ),
+                    element.set( 'centerX', images[i].width*.5 ),
+                    element.set( 'centerY', images[i].height*.5 ),
+                    element.addListener( 'down', elementDownListener );
+        }
+
+        document.getElementById( 'start' ).onclick = function(){view.start();},
+                document.getElementById( 'stop' ).onclick = function(){view.end();};
+    });
+
+</script>
+</body>
+</html>

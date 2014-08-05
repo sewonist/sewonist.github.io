@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>testHika</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage"></div>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+<script src="../bsTest.js"></script>
+<script>
+bs.plugin( 'sprite', 'last' );
+bs( function(){
+	var s0, inited;
+	bs.Sprite( 'explosion' ).S( 'src', 'hika/explosion.png', 'col', 29, 'row', 1 );
+	bs.WIN.sizer( function( w, h ){
+		if( inited ) return;
+		inited = 1;
+		bs.Dom( 'body' ).S( 'margin', 0, 'padding', 0 );
+		bs.Dom( '#stage' ).S( '>', bs.Sprite( 'explosion' ).S( '@0', 'position', 'absolute', 'div' ), 
+			'overflow', 'hidden', 'background', '#000', 'width', w, 'height', h,
+			'down', function( $e ){
+				var s;
+				bs.Sprite( 'explosion' ).S( '@0', 
+					'time', bs.rand( .5, 1.5 ), 
+					'width', s = bs.rand( 50, 600 ), 'height', s, 
+					'left', $e.x - s*.5, 'top', $e.y - s*.5, 
+					'@'
+				);
+			},
+			'>', bs.Sprite( 'explosion' ).S( '@1', 'position', 'absolute', 'div' )
+		),
+		bs.Sprite( 'explosion' ).S( '@1', 'width', 70, 'height', 70, 'frame', 15 );
+	} );
+});
+</script>
+</body>
+</html>

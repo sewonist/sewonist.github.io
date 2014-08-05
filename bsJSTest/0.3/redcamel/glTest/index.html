@@ -1,0 +1,223 @@
+﻿<html>
+<head>
+    <title>Learning WebGL &mdash; lesson 1</title>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <!--매트릭스 라이브러리 가지고옵니다-->
+    <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+    <!--쉐이더 코드 입력합니다-->
+    <script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+        void main(void) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    </script>
+    <!--쉐이더 코드 입력합니다-->
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+        uniform mat4 uMVMatrix;
+        uniform mat4 uPMatrix;
+        void main(void) {
+            gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        }
+    </script>
+    <script type="text/javascript">
+        var gl;
+        // 지엘 초기화
+        function initGL(canvas) {
+            gl=canvas.getContext('webgl')||canvas.getContext("experimental-webgl");
+            console.log(gl)
+            if(gl==undefined) return alert('지원안되!')
+            gl.viewportWidth = canvas.width,gl.viewportHeight = canvas.height;
+        }
+
+        // 자바스크립트로 쉐이더 만들고 지퓨한테 컴파일만 맡깁니다.
+        function getShader(gl, id) {
+            var shaderScript=document.getElementById(id);
+            if(!shaderScript) return null;
+            var str="", k=shaderScript.firstChild;
+            while(k) {
+                if(k.nodeType==3) str+=k.textContent;
+                k=k.nextSibling;
+            }
+
+            // 일단 쉐이더를 해석하고
+            var shader;
+            if(shaderScript.type=="x-shader/x-fragment") shader=gl.createShader(gl.FRAGMENT_SHADER);
+            else if(shaderScript.type=="x-shader/x-vertex") shader=gl.createShader(gl.VERTEX_SHADER);
+            else return null;
+
+            // 지퓨쉐이더에 소스랑 쉐이더를 컴파일 시킴...(gl은 노예...)
+            gl.shaderSource(shader, str);
+            gl.compileShader(shader);
+
+            // 지퓨한테 컴파일됐는지 물어봄
+            if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                // 에러정보를 내줌
+                alert(gl.getShaderInfoLog(shader));
+                return null;
+            }
+
+            return shader;
+        }
+
+        // 쉐이더를 맹글고 지퓨랑 연결해줍니다.
+        var shaderProgram;
+        function initShaders() {
+            // 컴파일 시킨 쉐이더를 자바스크립트 변수로 묶어 놓지용..
+            var fragmentShader=getShader(gl, "shader-fs");
+            var vertexShader=getShader(gl, "shader-vs");
+
+            // 그리고나서 쉐이더를 사용하기위해서 프로그램을 만듭니다.
+            shaderProgram=gl.createProgram();
+            // 프로그램에 버텍스 쉐이더와 프래그먼트 쉐이더를 붙여줍니다.
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            // 그리고 gl 즉 캔버스 컨텍스트에 쉐이더 프로그램을 연결해줍니다.
+            gl.linkProgram(shaderProgram);
+
+            // 잘못된 지퓨 프로그램인지 확인
+            if(!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+                alert("Could not initialise shaders");
+            }
+
+            // 프로그램을 사용할것으로 선언 - 필터 그로그램이 있다면 이걸 바꾸면 되것습니당...(아마도....;;)
+            gl.useProgram(shaderProgram);
+            // V램상의 어트리뷰트 포지션을 얻어온다.(시퓨에서 쉐이터 프로그램에 있는 변수를 지퓨상의 변수와 연결합니다...(바꿀방법이 우린...JS밖에 없으니!)
+            shaderProgram.vertexPositionAttribute=gl.getAttribLocation(shaderProgram, "aVertexPosition");
+            // 지퓨한데 담당할 버텍스 정보를 열려줍니다~
+            gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+            // 쉐이터에 상수도 알려줌...
+            shaderProgram.pMatrixUniform=gl.getUniformLocation(shaderProgram, "uPMatrix");
+            shaderProgram.mvMatrixUniform=gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
+            // 즉 시퓨상에서 쉐이더를 만들고 이놈을 지퓨상에 태운뒤...
+            // 시퓨상의 쉐이더에서 지퓨상의 쉐이더에 값을 입력할수 있게 맹금
+        }
+
+
+        // 모델뷰변환과 퍼스펙티브 변환용 매트릭스를 설정합니다.
+        var mvMatrix=mat4.create();
+        var pMatrix=mat4.create();
+        function setMatrixUniforms() {
+            // 유니폼 매트릭스4 를 버텍스에 박는다는겐가!
+            gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+        }
+
+
+        // 하..버퍼가 나왔음...
+        var squareVertexPositionBuffer;
+        function initBuffers() {
+            // 역시나 버퍼를 지엘에게 시켜서 만든다음....
+            squareVertexPositionBuffer=gl.createBuffer();
+            // 만들긴했는데 지엘이 무관심하여 -_-;;; 다시 알려줍니다. 이런 버퍼가 있다!
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+            var vertices=[
+                1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0
+            ];
+            // 알려준 버퍼에....다시...실제...지오메트리 버텍스 정보를 입력해줍니다.
+            // 스타틱 드로우는 멀까요 -0-;;
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+            // 사각형이니...
+            // x,y,z 즉 3개씩 끝어서 버텍스를 인식한다고 알려주고..
+            squareVertexPositionBuffer.itemSize=3;
+            // 버텍스숫자는 4개다 라고 알려줍니다.
+            squareVertexPositionBuffer.numItems=4;
+        }
+
+
+        // 드디어 그립니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        var time=0
+        function drawScene() {
+            // 뷰포트 사이즈를 다시알려주구용 -0-~
+            // 변환이 없다면 다시 안알려줘도 됩니당
+            gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+            // 화면을 매번 지우고 다시그려야하니..지워줍니다.
+            // 색상과 뎁스 정보를 다날립니다..
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            // 퍼스펙티브 변환을 자동으로 해줍니다...알랍~
+            mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+            // 이건 화면변화를 위해 임으로....작성..
+            time+=0.01
+
+            // 실제로 여기서 부터..모델을 그리게 되지요..(우린 사각형!)
+            // 상태머신이니... 모델뷰 메트릭스를(걍 모델 메트릭스라고 불러도뭐) 초기화 시켜줍니다...
+            mat4.identity(mvMatrix);
+            // x,y,z니까... 배열로 3개를 입력해주구용..
+            // z가 -7인이유는 아직 카메라를 구현안했으니 -0- 모델을 옮겨야 화면에 보입니다...그래서 밀어줍니다...(3차원이니까요 -0-)
+            mat4.translate(mvMatrix, [0.0, 0.0, -7]);
+            // 심심하니까....돌려줍니다... 그래서 time변수를 설정!
+            mat4.rotateY(mvMatrix, time)
+            mat4.rotateX(mvMatrix, time)
+            mat4.rotateZ(mvMatrix, time)
+            // 그리곤 사용할 버퍼 즉 그릴 버퍼를 알려주면!
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            // 퍼스펙티브 변환을 하기위해 떄려줍니다... (반복이니 함수로 묶었나보군요- )
+            setMatrixUniforms();
+            // 버텍스 버퍼정보를 따라 쭉 그립니다~
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+
+            ////////////////////////////////
+            // 음 이게중요한데..
+            ////////////////////////////////
+            // 다른 물체를 그릴려면..음 상태머신이니까!!!(내가 이런말을 쓰다니!!!)
+            // 매트릭스를 초기화하고
+            mat4.identity(mvMatrix);
+            // 그릴 정보를 입력합니다.... 원운동 시켜봅지요..
+            mat4.translate(mvMatrix, [Math.sin(time) * 5, Math.cos(time) * 5, -10]);
+            // 상태머신이니까 사각형을 계속 그릴꺼면 아래를 두줄은 입력다시 안해도 되것지요..(삼각형이면 바꺼주고~)
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            // 다시 매트릭스 계산한걸 입력합니다.
+            setMatrixUniforms();
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+
+
+            // 즉 모델 데이터만 따로 관리하고..... 그려야할 모델을 렌더함수에서 루프돌면서 위의 짓을 하면......  간단하지만 3D프레임웍 제작을 시작할수 있음돠...
+            // 실제로 돌려보지요 -__
+
+            for(var i=0; i < 10; i++) {
+                mat4.identity(mvMatrix);
+                mat4.translate(mvMatrix, [Math.sin(time + i) * 5, Math.cos(time + i) * 5, -10 - i]);
+                gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+                gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+                setMatrixUniforms();
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+            }
+        }
+
+        function webGLStart() {
+            var canvas=document.getElementById("lesson01-canvas");
+            // 캔버스에서 웹지엘 컨텍스트를 받아오고..
+            initGL(canvas);
+            // 버텍스쉐이더랑 프레그먼트 쉐이더를 짭니당
+            initShaders();
+            // 버퍼도 세팅해야겠습니다...쉐이더가 가지고 놀...뭐 배열값 -_-? 버그런거지용..
+            initBuffers();
+
+            // 깨끗하게 정리해주고..
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            // 뎁스테스트는 지퓨에게 맏깁니다..
+            gl.enable(gl.DEPTH_TEST);
+
+            // 루프시켜줍니다...그럼 렌더링이되지요 우린 60프레임 날립니다~
+            setInterval(drawScene, 16)
+        }
+    </script>
+</head>
+
+<body onload="webGLStart();">
+파폭을 일단 권장함
+<br>
+<canvas id="lesson01-canvas" style="border: none;" width="1260" height="800"></canvas>
+</body>
+</html>

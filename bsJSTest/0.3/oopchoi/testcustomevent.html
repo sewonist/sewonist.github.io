@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>custom event test</title>
+</head>
+<body>
+<script>
+    var Event, evt, cnt= 0, listener1, listener2;
+    Event = function(){
+        this.listeners = [];
+    },
+    Event.prototype.addListener = function (type, listener){this.listeners[type]? this.listeners[type].push(listener) : (this.listeners[type]=[],this.listeners[type].push(listener));},
+    Event.prototype.removeListener = function (type, listener){this.listeners[type].splice(this.listeners[type].indexOf(listener),1), this.listeners[type].length==0?delete this.listeners[type]:null;},
+    Event.prototype.hasListener = function (type){return this.listeners[type];},
+    Event.prototype.dispatchEvent = function (type, data){this.listeners[type].forEach(function (e){e.call(this, data);});},
+
+    listener1 = function (data){console.log(data)},
+    listener2 = function (data){console.log(data)},
+
+    evt = new Event(),
+    evt.addListener('change_data', listener1),
+    evt.addListener('change_data', listener2),
+    evt.addListener('change_data', function (data){console.log(data)}),
+
+    (function (){
+        evt.hasListener('change_data').forEach(function (listener){console.log('my listener')}),
+        evt.dispatchEvent('change_data', 'my data'),
+        evt.removeListener('change_data', listener1),
+        evt.removeListener('change_data', listener2),
+        evt.hasListener('change_data').forEach(function (listener){console.log('my listener')});
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bsJS Test suite</title>
+<meta name="keywords" content="bsJS" />
+<meta name="description" content="bsJS Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<a href="https://github.com/projectBS/bsJS">
+	<img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+</a>
+<div id="result"></div>
+<div id="test"></div>
+<script>
+//window.JSON = null;
+</script>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+<script src="../bsTest.js"></script>
+<script>
+
+bsTest.printer = function(r){ document.getElementById('test').innerHTML += r; };
+
+bsTest.result = function(r){ document.getElementById('result').innerHTML = r; }
+
+
+bs( function(){
+
+	var t0, t1, t2;
+
+	//bs.XXX
+	bsTest.tear( "bs$XXX test",  function(){
+	
+	});
+
+	// bs.ex
+	bsTest('bs.ex',
+		'3~5 사이의 정수', bsTest.IN(3,4,5), bs.ex(3, "~", 5),
+		"3~5 사이의 실수", bsTest.RANGE( 3, 5 ), bs.ex(3, "~f", 5));
+
+
+	// trim
+    bsTest('bs.trim', 
+		'"abc"', bs.trim("abc"), 'abc',
+		'"abc "', bs.trim("abc "), 'abc',
+		'" abc"', bs.trim(" abc"), 'abc',
+		'" abc "', bs.trim(" abc "), 'abc',
+		'" a b c "', bs.trim(" a b c "), 'a b c',
+		'"전각 스페이스[　a b c ]"', bs.trim("　a b c　"), 'a b c',
+		'"Tab 대응[	a b c	]"', bs.trim("	a b c	"), 'a b c');
+
+
+});
+
+</script>
+</body>
+</html>

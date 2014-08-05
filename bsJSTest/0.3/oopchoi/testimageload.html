@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div id="dom" style="width:500px; height:500px; display:block;"></div>
+<script>
+    (function (){
+        var images = [], loadCount = 0,
+                dom = document.getElementById('dom'),
+                i, j, img,
+                onload = function (){++loadCount==images.length?alert('complete'):console.log(loadCount);};
+
+        for(i=0, j=5; i<j; i++)
+            (images[i] = img = dom.appendChild(new Image)).onload = onload,
+                    img.src = 'http://www.bsidesoft.com/hika/s58/' + i + '.png';
+    })();
+</script>
+</body>
+</html>

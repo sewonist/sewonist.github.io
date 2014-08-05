@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage"></div>
+<script src="../../bsJS/bsjs.0.5.js"></script>
+<script>
+bs( function(){
+	bs.ANI.ease( 'rollIn', function(a,c,b){return a < .4 ? ( a*=2.5, -b*a*(a-2)+c ) : a > .6 ? ( a=(a-.60)*2.5, a*a*(-b)+b+c ) : b+c }, 1 ),
+	bs.Css('body').S( 'margin', 0, 'padding', 0 ),
+	bs.Css('.act').S( 'position', 'absolute', 'border-radius', 100, 'transform', 'rotateZ(0)' ),
+	bs.Dom( '<div id="down" class="act"></div>' ).S( 'display', 'none', 'border', '1px dashed #777', 'width', 0, 'height', 0, 'left', 0, 'top', 0, '<', '#stage' ),
+	bs.Dom( '<div id="up" class="act"></div>' ).S( 'display', 'none', 'background', '#f00', 'width', 100, 'height', 100, 'opacity', 0, 'left', 0, 'top', 0, '<', '#stage' ),
+	
+	bs.Dom('#stage').S( 'position', 'absolute', 'width', '100%', 'height', 400, 'background', '#eee', 
+		'isCapture', true,
+		'down', function(e){
+			e.prevent();
+			if( bs.Dom('#up').S('*check') == '1' ) bs.Dom('#up').S( 'display', 'none', '*check', '0' );
+			bs.ANI.style( bs.Dom('#down').S( 'display', 'block', 'width', 0, 'height', 0, 'left', e.cx, 'top', e.cy, 'this' ),
+				'id', 'down', 'width', 100, 'height', 100, 'left', e.cx - 50, 'top', e.cy - 50, 'loop', -1, 'ease', 'rollIn', 'time', .7
+			);
+		},
+		'up', function(e){
+			e.prevent();
+			bs.ANI.tweenStop('down');
+			bs.Dom('#down').S( 'display', 'none' );
+			if( bs.Dom('#up').S('*check') == '1' ) return;
+			bs.ANI.style( bs.Dom('#up').S( 'display', 'block', 'opacity', 0, 'left', e.cx - 50, 'top', e.cy - 50, '*check', '1', 'this' ),
+				'opacity', .7, 'ease', 'rollIn', 'time', .7, 'end', function(t){
+					t.S( 'display', 'none', '*check', '0' );
+				}
+			);
+		}
+	);
+} );
+</script>
+</body>
+</html>

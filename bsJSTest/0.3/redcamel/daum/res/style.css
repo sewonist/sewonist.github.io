@@ -1,0 +1,38 @@
+@charset "utf-8";
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+
+
+html, body {
+    font-family: 'Nanum Gothic', Helvetica, arial, freesans, clean, sans-serif;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 12px;
+    overflow-x: hidden;
+    background:#333;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+
+.thumb_title{padding:5px 5px 10px 5px}
+.thumb_photo{border-radius:10px}
+.thumb_year{padding:5px 5px 5px 5px}
+.thumb_detail{padding:10px 5px 10px 5px;color:#fff;margin-top:5px;cursor:pointer;border-radius:10px;border:1px;background-image:linear-gradient(to bottom, #46284c 0%, #171323 100%)}
+.thumb_detailView{margin:10px 10px 20px 10px;padding:15px;background:#444;border-radius:10px;line-height:1.4}
+.detail_title{font-size:20px;margin-bottom:10px}
+.detail_homepage{font-size:14px;padding:10px 0px 10px 0px}
+
+._FL {float:left}
+._FR {float:right}
+._CLEAR {clear:both}
+._TS1{text-shadow:0 -1px 0 rgba(0,0,0,.7)}
+._BOXSHADOW1{box-shadow:1px 1px 20px 0px rgba(0, 0, 0, 0.5)}
+._TR_LR10 {border-top-left-radius:10px;border-top-right-radius:10px;border:1px;}
+._BR_LR10 {border-bottom-left-radius:10px;border-bottom-right-radius:10px;border:1px}
+._MARGIN_CENTER {margin:auto}
+._MARGIN_CENTER {margin:auto}

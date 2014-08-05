@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bs5 Test suite</title>
+    <meta name="keywords" content="bs5" />
+    <meta name="description" content="bs5 Test suite" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+    <link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage">
+    <form data-bsview="f0">
+        <input type="checkbox" name="cb0" id="cb0_0" value="0"/><label for="cb0_0">check0</label>
+        <input type="checkbox" name="cb0" id="cb0_1" value="1"/><label for="cb0_1">check1</label>
+        <input type="checkbox" name="cb0" id="cb0_2" value="2"/><label for="cb0_2">check2</label>
+    </form>
+    <form data-bsview="f1">
+        <input type="checkbox" name="cb1" id="cb1_0" value="0"/><label for="cb1_0">check10</label>
+        <input type="checkbox" name="cb1" id="cb1_1" value="1"/><label for="cb1_1">check11</label>
+        <input type="checkbox" name="cb1" id="cb1_2" value="2"/><label for="cb1_2">check12</label>
+    </form>
+</div>
+<div id="result"></div>
+<div id="test"></div>
+
+<script src="../../../../bsJS/bsjs.0.5.js"></script>
+
+<script>
+    bs.debug(1);
+    //bs.plugin( 'vdom' );
+    bs( function(){
+        var forms = {}, bsviewData, currentForm, children, child, t0, t1, t2, t3, t4, t5, i, j, k, l;
+
+        t0 = bs.Dom('[data-bsview]').length;
+        t1 = bs.Dom('[data-bsview')[0];
+        t2 = bs.Dom('[data-bsview')[1];
+        t3 = bs.Dom('[data-bsview]').S('*bsview');
+        t4 = bs.Dom('[data-bsview]').S(0, '*bsview');
+        t5 = bs.Dom('[data-bsview]').S(1, '*bsview');
+
+        console.log(t0);
+        console.log(t1);
+        console.log(t2);
+        console.log(t3);
+        console.log(t4);
+        console.log(t5);
+
+        for(i=0, j=bs.Dom('[data-bsview]').length; i<j; i++){
+            bsviewData = bs.Dom('[data-bsview]').S(i, '*bsview');
+            forms[bsviewData] = currentForm = bs.Dom('[data-bsview]')[i];
+
+            children = bs.Dom(currentForm).S('>');
+            for(k=0, l=children.length; k<l; k++){
+                (child = bs.Dom(children[k])).S('display', 'none');
+
+                console.log('------' + k + '------');
+                console.log(child);
+
+                switch( child.S('@tagName').toLowerCase() ){
+                    case "input":
+                        switch( child.S('@type').toLowerCase() ){
+                            case "checkbox":
+                                child.S( 'after', bs.Dom('<div></div>').S('html', 'check'+i+k, 'display', 'inline', '*bsview-element', bs.Dom(child).S('*bs'), 'this' ) );
+                        }
+                    break;
+                    case'textarea':
+                    case'select':
+                    case'label':
+                }
+            }
+        }
+        console.log(forms);
+
+        t0 = bs.Dom('[data-bsview-element]');
+        for(i=0, j=t0.length; i<j; i++){
+            t1 = bs.Dom(bs.Dom('[data-bsview-element]')[i]).S('*bsview-element');
+            t2 = bs.Dom('[data-bs]');
+            for(k=0, l=t2.length; k<l; k++){
+                if( t1== bs.Dom(bs.Dom('[data-bs]')[k]).S('*bs')){
+                    console.log('-----found input tag-----')
+                    console.log(t1);
+                    console.log(bs.Dom(bs.Dom('[data-bs]')[k])[0]);
+                }
+            }
+        }
+
+
+
+
+//	bs.Vdom.test();
+    } );
+</script>
+</body>
+</html>

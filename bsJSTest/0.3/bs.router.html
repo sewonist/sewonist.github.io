@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage"></div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+<script src="../bsTest.js"></script>
+<script src="./printer.js"></script>
+<script>
+bs.plugin( 'router', 'last' );
+bs( function(){
+	bsTest.tear( 'template init', function(){
+		bs.Css( 'a' ).S( 'display', 'block', 'border-radius', 5, 'line-height', 20, 'padding', 5, 'margin', 10, 'background', '#eee' );
+		bs.Dom( '<a href="#">#</a>' ).S( '<', '#stage' );
+		bs.Dom( '<a href="#menu">#menu</a>' ).S( '<', '#stage' );
+		bs.Dom( '<a href="#menu/test1">#menu/test1</a>' ).S( '<', '#stage' );
+		bs.Dom( '<a href="#menu/test2">#menu/test2</a>' ).S( '<', '#stage' );
+		bs.Dom( '<div id="history"></div>' ).S( '<', '#stage',
+			'float', 'right', 'width', '30%', 
+			'border-radius', 5, 'line-height', 25, 'padding', 10, 'margin', 10, 
+			'border', '1px dashed #666', 'background', '#fee'
+		);
+		bs.Dom( '<div id="route"></div>' ).S( '<', '#stage','border-radius', 5, 'line-height', 25, 'padding', 10, 'margin', '10 20', 'border', '1px dashed #666');
+		
+		bs.Dom( '#route' )
+		
+		bs.ROUTER.start(
+			'#', function( $uri ){
+				var t0;
+				bs.Dom( '#route' ).S( 'html', 'start:' + $uri + '<br>' );
+				t0 = bs.ROUTER.history;
+				bs.Dom( '#history' ).S( 'html', '<b>history</b><br>'+
+					( t0[4] ? t0[4]+'<br>' : '-<br>' )+
+					( t0[3] ? t0[3]+'<br>' : '-<br>' )+
+					( t0[2] ? t0[2]+'<br>' : '-<br>' )+
+					( t0[1] ? t0[1]+'<br>' : '-<br>' )+
+					( t0[0] ? t0[0]+'<br>' : '-<br>' )
+				);
+			},
+			'#menu', function( $uri ){
+				bs.Dom( '#route' ).S( 'html+', 'start-menu:' + $uri + '<br>' );
+			}
+		);
+		bs.ROUTER.end(
+			'#', function( $uri ){
+				bs.Dom( '#route' ).S( 'html+', 'end:' + $uri + '<br>' );
+			},
+			'#menu', function( $uri ){
+				bs.Dom( '#route' ).S( 'html+', 'end-menu:' + $uri + '<br>' );
+			}
+		);
+		bs.ROUTER.table(
+			'#menu/test1', function( $uri ){
+				bs.Dom( '#route' ).S( 'html+', 'table-test1:' + $uri + '<br>' );
+			},
+			'#menu/test2', function( $uri ){
+				bs.Dom( '#route' ).S( 'html+', 'table-test2:' + $uri + '<br>' );
+			}
+		);	
+		bs.ROUTER.route();
+		
+	} );
+} );
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>book</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head><body>
+<div id="stage"></div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+<script>
+jQuery(document).ready(function($){
+    var type, i, j;
+    type = ['all', 'title', 'isbn', 'writer', 'publisher', 'keyword', 'overview', 'contents'];
+
+    /**
+     * bs.css( 'book.css' );
+     * 
+     * [설명]bs.css()는 아래 코드와 완전히 다르다. bs에서 사용한 book.css는 css3에 규격화된 css를 쓴 반면
+     * 여기서의 css는 각 브라우저 벤더에 따라 동작하도록 만들어야 한다. 
+     * 이 점은 css3 스펙만 사용하면 bs로 css를 만드는게 훨씬 용이하다는 것을 보여준다. 
+     */
+    $("head").append('<link rel="stylesheet" type="text/css" href="book.css">'); 
+
+    /**
+       i = type.length; while( i-- ) type[i] = '<li class="type">' + type[i] + '</li>';
+       bs.Dom(bs.tmpl('book0.html', {type:type} )).S( '<', '#stage' );
+
+       [설명]아래는 jQuery가 아닌 underscorejs라는 유명한 라이브러리를 이용해 template처리를 했다. 
+       bs.tmpl은 underscore의 template과는 다르다. bs는 jpage plugin을 사용할 수 있다 
+     */
+    $.ajaxSetup({async:false});
+    $.get('book0.html', function(data){
+        $('#stage').append(_.template(data, {type:type}));
+    });
+    $.ajaxSetup({async:true});
+
+    /**
+       bs.Dom('.type').S( 'down', function(e){
+           bs.Dom('.type').S( 'class-', 'selectType' );
+           loadList( bs.Dom(this).S( 'class+', 'selectType', 'html' ), bs.Dom('#query').S('@value') );
+       } );      
+
+        [설명] bs의 S()함수는 get, set을 동시에 할 수 있다. 전체가 홀수 인자면 마지막 인자가 get될 key이고 해당 key에 대한 값을 반환해준다. 
+        짝수이면 k, v, k, v.... 형태로 인자수에 상관없이 key에 대한 value를 셋팅한다. 
+        key가 @value에서 @는 attribute를 의미한다.(맞나?)
+    */
+    $('.type').on('mousedown', function(e){
+        var THIS = $(this);
+        $('.type').removeClass('selectType');
+        THIS.addClass('selectType');
+        loadList( THIS.html(), $('#query').val() );
+    });
+
+    /**
+     * bs.Dom(bs.Dom('.type')[0]).S( 'class+', 'selectType' );
+     * 
+     * [설명] jQuery는 addClass나 removeClass가 명시적으로 정의된 반면 
+     * bs는 S()함수 하나로 Class를 추가/삭제할 수 있다. 
+     */
+    $($('.type')[0]).addClass('selectType');
+
+    /**
+       bs.Dom('#query').S(
+           'focus', function(e){
+               bs.Dom(this).S( 'class+', 'edit' );
+           },
+           'blur', function(e){
+               bs.Dom(this).S( 'class-', 'edit' );
+           },
+           'keydown', function k(e){
+               if( !e.key('enter') ) return;
+               loadList( bs.Dom('@.selectType').S('html'), e.value || '' );
+               bs.Dom(this).S('b');
+           }
+       );
+
+        [설명]bs는 이벤트로 S()함수로 처리할 수 있다. 
+        jQuery는 이벤트 함수를 명시적으로 사용할 수도 있고 on()함수로 사용할 수 있다.
+     */
+    $('#query').focus( function(e){
+        $(this).addClass('edit');
+    }).blur( function(e){
+        $(this).removeClass('edit');
+    }).keydown( function(e){
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if( code != 13 ) return;
+        loadList( $('.selectType').html(), $(e.currentTarget).val() || '' );
+        $(this).blur();
+    });
+
+    /**
+       bs.Dom('#go').S( 'down', function k(e){
+           loadList( bs.Dom('@.selectType').S('html'), bs.Dom('#query').S('@value') || '' );
+           bs.Dom('#query').S('b');
+       } );             
+     */
+    $('#go').click( function(e) {
+        loadList( $('.selectType').html(), $('#query').val() || '' );
+        $('#query').blur();
+    });    
+
+    //데이터 로딩 관련 
+    var loadData = {};
+    function url( type, id, page ){
+       return 'http://apis.daum.net/search/book?apikey=76aaa32e1a78cf26f1f9f714eaf6c85089acf6f1&result=20&sort=date&output=json'+
+               '&pageno=' + ( page || 1 ) +
+               '&searchType=' + type +
+               '&q=' + encodeURIComponent(id) +
+               '&callback=?';
+    }
+    function S( type, id, val ){
+       id = id || '@';
+       return val == undefined ? loadData[type] && loadData[type][id] : ( loadData[type] || ( loadData[type] = {} ) )[id] = val;
+    }
+    function loadList( type, id ) {
+        var t0;
+        loadData._type = type;
+        loadData._id = decodeURIComponent( id ? $.trim(id) : '' );
+        t0 = S( type, id );
+        if( t0 ) { 
+            drawList( loadData._type, loadData._id, t0 ); 
+        } else {
+            drawList( loadData._type, loadData._id, 'wait' ); 
+            $.getJSON(url( loadData._type, loadData._id ), complete );
+        }
+        function complete(v) {
+            var t0;
+            if( !v ) return;
+            if( v.channel.result == 0 ) t0 = 'nodata';
+            else{
+                v = v.channel,
+                v.item.total = parseInt( parseInt(v.totalCount) / parseInt(v.result) ),
+                v.item.page = loadData._page || 1,
+                t0 = S( loadData._type, loadData._id, v.item );
+            }
+            drawList( loadData._type, loadData._id, t0 );
+        }
+    }
+    function loadDetail(v) {
+        var t0;
+        t0 = v.split('/'),
+        loadData._type = t0[0];
+        loadData._id = decodeURIComponent(t0[1]);
+        loadData._isbn = t0[2];
+        t0 = S( type, loadData._id );
+        if( t0 ) { 
+            drawDetail( loadData._type, loadData._id, loadData._isbn, t0 ); 
+        } else {
+            drawDetail( loadData._type, loadData._id, loadData._isbn, 'wait' );
+            $.getJSON(url( loadData._type, loadData._id ), complete );
+        }
+        function complete(v) {
+            var t0;
+            if( !v ) return;
+            if( v.channel.result == 0 ) t0 = 'nodata';
+            else{
+                v = v.channel,
+                v.item.total = parseInt( parseInt(v.totalCount) / parseInt(v.result) ),
+                v.item.page = loadData._page || 1,
+                t0 = S( loadData._type, loadData._id, v.item );
+            }
+            drawDetail( loadData._type, loadData._id, loadData._isbn, t0 );
+        }
+    }
+    
+    //렌더링 관련 
+    var resultStat;
+    //렌더링 - List
+    resultStat = '';
+    function drawList( type, id, data ) {
+        var t0, i, j, k;
+        resultStat = type+'/'+id;
+        if( $('.modal').length > 0 ) $('.modal').remove(); 
+        //summary
+        $('#summary').html('page : ' + data.page + ' / ' + data.total);
+        //type
+        ( (t0 = $('.type')).removeClass('selectType') );
+        i = t0. length;
+        while( i-- ) {
+            if( t0[i].innerHTML == type ){
+                $(t0[i]).addClass('selectType');
+                break;
+            }
+        } 
+        //id
+        $('#query').val(id);
+        //data
+        if( data == 'nodata' ){
+            $('#result').html( '데이터가 없습니다' );
+        }else if( data == 'wait' ){
+            $('#result').html( 'wait' );
+        }else{
+            $('.thumb').remove(); //기존 Event와 data까지 삭제함 
+            for( t0 = '', i = 0, j = data.length ; i < j ; i++ ) t0 += '<img onerror="this.src=\'noimage.png\'" data-data="' + 
+                type + '/' + id + '/' + data[i].isbn + 
+                '" src="' + data[i].cover_l_url +'" class="thumb">';
+            $('#result').html(t0);
+            $('.thumb').mouseover(listOver).mouseout(listOut).mouseup(listDown);
+        }
+        function listDown(e){
+            loadDetail( $(this).data('data') );
+        }
+        function listOver(e){
+            $(this).addClass('thumbOver');
+        }
+        function listOut(e){
+            $(this).removeClass('thumbOver');
+        }
+    }
+
+    //렌더링 - Detail
+    var strip, detailTmpl;
+    strip = /[&]lt[;][^&]+[&]gt[;]/g
+    $.ajaxSetup({async:false});
+    $.get('book1.html', $.proxy(function(data){
+        detailTmpl = _.template(data);
+    }, this));
+    $.ajaxSetup({async:true});
+    function drawDetail( type, id, isbn, data ) {
+        var t0, i;
+        if( resultStat != type + '/' + id ) { 
+            return loadList( type, id ); 
+        }
+        if( data == 'nodata' ) {
+            $('.detail').empty().html('데이터가 없습니다.');
+        }else if( data == 'wait' ){ 
+            $('.detail').empty().html('wait');
+        }else{
+            i = data.length;
+            while( i-- ) if( data[i].isbn == isbn ){
+                t0 = data[i];
+                break;
+            }
+            if( t0 ){
+                i = t0.length;
+                while( i-- ) {
+                    t0[i] = t0[i].replace( this.strip, '' );
+                }
+                t0.L = '\uF144';
+                $('body').append('<div class="modal"></div>');
+                $('.modal').css('height', $('body').prop('scrollHeight'))
+                        .mouseup(close)
+                        .mouseover(modal)
+                        .mouseout(modal)
+                        .html( detailTmpl(t0) );
+            }
+        }        
+        function modal(e){
+            e.preventDefault();
+        }
+        function close(e){
+            var t0;
+            e.preventDefault();
+            $('.modal').remove();
+            t0 = resultStat.split( '/' );
+            loadList( t0[0], t0[1] );
+        }
+    }   
+    
+});
+</script>
+</body>
+</html>

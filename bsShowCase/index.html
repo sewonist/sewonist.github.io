@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Showcase</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body style="font-family:Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;">
+<a href="https://github.com/projectBS/bsJS">
+	<img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+</a>
+<div id="a" class="list"><a href="0.3/space" target="_blank"><img src="0.3/Thumbnails/thumb_space.png" />space:우주여행</a></div>
+<div class="list"><a href="0.3/move" target="_blank"><img src="0.3/Thumbnails/thumb_move.png"/>move:키보드와 파티클</a></div>
+<div class="list"><a href="0.3/todo" target="_blank"><img src="0.3/Thumbnails/thumb_todo.png"/>todo:할 일 관리</a></div>
+<div class="list"><a href="0.3/book" target="_blank"><img src="0.3/Thumbnails/thumb_book.png"/>book:오픈API 책 검색</a></div>
+<div class="list"><a href="0.3/watch" target="_blank"><img src="0.3/Thumbnails/thumb_watch.png"/>watch:파티클 시계</a></div>
+<div class="list"><a href="0.3/rain" target="_blank"><img src="0.3/Thumbnails/thumb_rain.png"/>rain:파티클 비표현</a></div>
+<div class="list"><a href="0.3/bounce" target="_blank"><img src="0.3/Thumbnails/thumb_bounce.png"/>bounce:충돌 & 바운드</a></div>
+<div class="list"><a href="0.3/billborad" target="_blank"><img src="0.3/Thumbnails/thumb_billboard.png"/>billboard:빌보드</a></div>
+<div class="list"><a href="0.3/fireworks" target="_blank"><img src="0.3/Thumbnails/thumb_fireworks.png"/>fireworks:스프라이트</a></div>
+<div class="list"><a href="0.3/puzzle" target="_blank"><img src="0.3/Thumbnails/thumb_puzzle.png"/>puzzle:퍼즐</a></div>
+<div class="list"><a href="0.3/show4d2" target="_blank"><img src="0.3/Thumbnails/thumb_show4d2.png"/>D2:네이버 오픈 세미나 발표자료</a></div>
+<div class="list"><a href="0.3/jco" target="_blank"><img src="0.3/Thumbnails/thumb_jco.png"/>JCO 발표자료</a></div>
+<div class="list"><a href="0.3/lotto" target="_blank"><img src="0.3/Thumbnails/thumb_lotto.png"/>lotto: 인생 역전</a></div>
+<div class="list"><a href="0.4/layout" target="_blank"><img src="0.3/Thumbnails/thumb_layout.jpg"/>Layout:포지션모델</a></div>
+
+<div id="stage"></div>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+<script>
+bs( function(){
+	bs.Css("img").S( 'border', 0, 'display', 'block', 'margin-bottom', 10 );
+	bs.Css("a").S( 'text-decoration', 'none' );
+	bs.Css(".list").S(
+		'width',300, 'text-align', 'center', "font-weight", "bold", "border", "1px dashed #aaa", "padding", 10, "margin",10,
+		'float', 'left','border-radius', 10
+	);
+} );
+</script>
+</body>
+</html>

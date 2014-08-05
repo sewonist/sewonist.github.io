@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>projectBS Labs.</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta charset="utf-8"/>
+<script src="../../bs/bsjs.js"></script>
+<script src="./bench.js"></script>
+<script>
+	bench.start(1);
+</script>
+</head>
+<body>
+<div id="bench">
+	
+</div>
+<script>
+bs(function(){
+	bench.printer = function(time, mark){
+		bs.Dom('#bench').S('html', time);
+	}
+	bench.end(1);
+});
+</script>
+</body>
+</html>

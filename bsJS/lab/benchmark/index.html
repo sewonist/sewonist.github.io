@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<title>bs benchmark</title>
+</head>
+<body>
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="jquery-2.0.3.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+	$.noConflict();
+</script>
+<script src="../../bs/bsjs.js"></script>
+<script type="text/javascript" charset="utf-8">
+var benchmark = {}, domLen = 5000;
+benchmark.recs = {},
+benchmark.getSec = function(){
+	if (Date.now) benchmark.getSec = function(){return Date.now();};
+	else benchmark.getSec = function(){return +new Date;};
+	return benchmark.getSec();
+},
+benchmark.mark = function(markName){
+		benchmark.recs[markName] = benchmark.getSec();
+},
+benchmark.fin = function(startName, endName, callbackFn){
+	var _startTime, _endTime, _elapsedTime;
+	_startTime = benchmark.recs[startName],
+	_endTime = benchmark.recs[endName],
+	_elapsedTime = (_endTime - _startTime) / 1000;
+	// if exist callback function
+	if (callbackFn)
+		callbackFn(startName, endName, _startTime, _endTime, _elapsedTime);
+	else
+		console.log("elapsed time[" + startName + " to " + endName + "] : " + _elapsedTime + " seconds", "[BENCHMARK]");
+	return _elapsedTime;
+};
+
+window.onload = function(){
+	setTimeout(jq1CreateDom, 100);
+};
+
+/*
+	DOM 생성 테스트
+*/
+// jQuery 1.x
+function jq1CreateDom(){
+	benchmark.mark('jq1CreateDomStart');
+	for (var i=0; i < domLen; i++) {
+		$('#jquery1').append('<div class="jq1">jq1 '+i+'</div>');
+	};
+	benchmark.mark('jq1CreateDomFin');
+	benchmark.fin('jq1CreateDomStart', 'jq1CreateDomFin');
+	setTimeout(jq2CreateDom, 10);
+};
+// jQuery 2.x
+function jq2CreateDom(){
+	benchmark.mark('jq2CreateDomStart');
+	for (var i=0; i < domLen; i++) {
+		jQuery('#jquery2').append('<div class="jq2">jq2 '+i+'</div>');
+	};
+	benchmark.mark('jq2CreateDomFin');
+	benchmark.fin('jq2CreateDomStart', 'jq2CreateDomFin');
+	setTimeout(bs5CreateDom, 10);
+};
+// bsJS
+function bs5CreateDom(){
+	benchmark.mark('bs5CreateDomStart');
+	for (var i=0; i < domLen; i++) {
+		bs.dom('<div class="bs5">bs5 '+i+'</div>').$("<", '#bs');
+	};
+	benchmark.mark('bs5CreateDomFin');
+	benchmark.fin('bs5CreateDomStart', 'bs5CreateDomFin');
+	setTimeout(jq1ChangeCssDom, 10);
+};
+
+/*
+	DOM CSS 변경 테스트
+*/
+// jQuery 1.x
+function jq1ChangeCssDom(){
+	benchmark.mark('jq1ChangeCssDomStart');
+	$('.jq1').css({
+		'border':'1px solid orange',
+		'background':'#ccc',
+		'color':'#555'
+	});
+	benchmark.mark('jq1ChangeCssDomFin');
+	benchmark.fin('jq1ChangeCssDomStart', 'jq1ChangeCssDomFin');
+	setTimeout(jq2ChangeCssDom, 10);
+};
+// jQuery 2.x
+function jq2ChangeCssDom(){
+	benchmark.mark('jq1ChangeCssDomStart');
+	jQuery('.jq2').css({
+		'border':'1px solid red',
+		'background':'#ccc',
+		'color':'#555'
+	});
+	benchmark.mark('jq1ChangeCssDomFin');
+	benchmark.fin('jq1ChangeCssDomStart', 'jq1ChangeCssDomFin');
+	setTimeout(bs5ChangeCssDom, 10);
+};
+// bsJS
+function bs5ChangeCssDom(){
+	benchmark.mark('bs5ChangeCssDomStart');
+	bs.dom('.bs5').$(
+		'border', '1px solid blue',
+		'background', '#ccc',
+		'color', '#555'
+	);
+	benchmark.mark('bs5ChangeCssDomFin');
+	benchmark.fin('bs5ChangeCssDomStart', 'bs5ChangeCssDomFin');
+	//setTimeout(next, 10);
+};
+</script>
+	<div id='jquery1'></div>
+	<div id='jquery2'></div>
+	<div id='bs'></div>
+</body>
+</html>

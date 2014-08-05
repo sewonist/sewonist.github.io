@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bsSelector Test</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage">
+	<div width="50%" class="ka" id="a0">d50<a id="aa0">a0</a></div>
+	<div width="100%" class="ka" id="a1"><a id="aa1">a1</a>d100</div>
+	<input id="i0" type="radio" value="i0" checked>
+	<div class="ka" id="a2" class="example"><p><a id="aaa">aaaa</a></p></div>
+	<div class="ka" id="a3"><span id="sp3">span3</span></div>
+	<p id="p0" data-test="hika-a">hika-a</p>
+	<p id="p1" data-test="a hika a">a hika a</p>
+	<span id="sp5">span5</span>
+	<div class="ka" id="a4"><span id="sp4">span4</span></div>
+	<p id="p2" data-test="aaahikaaa">aaahikaaa</p>
+	<p id="p3" data-test="hika">hika</p>
+	<p id="p4" data-test="hika"><span>dskdksd</span></p>
+	<p id="p5" data-test="hika" lang="it">it</p>
+	<span id="sp0">span0</span><span id="sp1">span1</span>
+	<i id="i0"><span id="sp2">span2<b id="b0"></b></span></i>
+	<i id="i1"><b id="b1" data-test="hikaaa">hikaaa</b></i>
+	<dd id="dd0" data-test="aaahika">aaahika dd0</dd>
+	<input id="c1" type="checkbox" value="c1" checked disabled>
+	<dd id="dd1">dd1</dd>
+	<dd id="dd2">dd2</dd>
+	<dd id="dd3"><dt id="dt1">dt1</dt></dd>
+	<dl id="dl0">dl0<dd id="dd4">dd4</dd></dl>
+	<dl id="dl1"><dd id="dd5">dd5</dd></dl>
+	<dl id="dl2"><dt id="dt0">dt0</dt><dd id="dd6">dd6</dd><dd id="dd7">dd7</dd></dl>
+	<dl id="dl3"><dt id="dt1">dt1</dt></dl>
+	<a id="aa2" href="#" target="_blank">a_blank</a><a target="_self">a_self</a>
+</div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.5.js"></script>
+<script src="../bsTest.js"></script>
+<script src="../0.5/printer.js"></script>
+<style>
+p:lang(it){color:#f00}
+</style>
+
+<script>
+bs.debug(1);
+bs( function(){
+	var mk = function( sel ){
+		var count = bs.Dom(sel).length,
+			arg = [sel, function(){
+				return count;
+			},
+			document.querySelectorAll(sel).length], i = 0,
+			mk = function(i){
+				return function(){
+					return bs.Dom(sel)[i].id;
+				};
+			};
+			while( i < count ) arg.push( mk(i), bs.Dom(sel)[i++].id );
+			bsTest.apply( null, arg );
+	},
+	tester = ['p:lang(it)','dd:nth-child(even)','dd:nth-of-type(even)','dd:nth-child(odd)','dd:nth-of-type(odd)','dd:nth-child(1)','dd:nth-of-type(1)',
+	'a:link',':root','dt:only-child','dt:only-of-type','dd:last-of-type','dd:last-child',
+	'[target=_blank]','p:empty','input:disabled','input:enabled','input:checked','dd:first-of-type','dd:first-child',
+	'[data-test~=hika]','[data-test~=hika]','[data-test~=hika]','[data-test*=hika]','[data-test$=hika]','[data-test^=hika]','[data-test|=hika]',
+	'[width]','i,dd','div ~ p ~ p','i b','i > b','p + span','#a0','#a0,#a1','#a0,#a1,#a2','.ka','span',
+	'div ~ p','div > p','p > a','div > p > a','i > span > b','i > span','span > b','div.example > p > a','div ~ p ~ p'
+	
+	
+	], i = tester.length;
+	while( i-- ) mk( tester[i] );
+} );
+</script>
+</body>
+</html>

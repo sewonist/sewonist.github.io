@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage" data-id="stageId" data-id2="stageId2">test stage</div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.3.js"></script>
+<script src="../bsTest.js"></script>
+<script src="./printer.js"></script>
+<script>
+bs( function(){
+	bsTest.tear( 'init', function(){
+		//set stage
+		bs.Css( '#stage' ).S( 'border', '1px solid #f00', 'margin-top', 30, 'width', '50:%', 'padding', 10 );
+		bs.Css( '#stage' ).S( 'width', 100 );
+		bs.Dom( '#stage' ).S( 'background-color', '#eee' );
+		
+		//basic test
+		var i = 0;
+		bs.Dom( '#stage' ).S(
+			'mousedown', function(e){
+				i = 1;
+				console.log("this.offsetWidth : ", this.offsetWidth);
+				console.log("$e.x : ", e.x);
+				bsTest( 'mousedown',
+					"this.id", 'stage', this.id,
+					"e.x", bsTest.RANGE( 0, this.offsetWidth ), e.x
+				);
+			},
+			'mousemove', function(e){
+				if( i++ == 1 ){
+					bsTest( 'mousemove', 
+						"this.id", 'stage', this.id,
+						"typeof $e.dx", 'number', typeof e.dx,
+						"typeof $e.dy", 'number', typeof e.dy
+					);
+				}
+			},
+			'mouseup', function(e){
+				bsTest( 'mouseup', 
+					"this.id", 'stage', this.id, 
+					"e.x", bsTest.RANGE(0,this.offsetWidth), e.x
+				);
+				bs.Dom( '#stage' ).S( 'mousedown', null, 'mousemove', null, 'mouseup', null );
+			}
+		);
+		
+		//test other listener type : array, object
+		var testbox = bs.Dom( '<div></div>' ).S( 'width', 300, 'height', 300, 'background', '#ff0000', '@id', 'testbox', 'this' );
+		bs.Dom( '#stage' ).S( '>', testbox );
+		var test = {
+			down:function(e){
+				bsTest( 'down-objectType listener',
+					"this(==test)", test, this
+				);
+			},
+			up:function(e){
+				bsTest( 'up-ArrayType listener', 
+					"this(==test)", test, this
+				);
+			}
+		};
+		bs.Dom( '#testbox' ).S( 'mouseup', [test, test.up] );
+		bs.Dom( '#testbox' ).S( 'down', test );
+	} );
+	
+	
+	///this.__scroller.S( 'transitionend', [this, this._transitionEnd] );
+	///this.__wrapper.S( 'down', this );
+			
+			
+} );
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>bs5 Test suite</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stageHtml"></div>
+<script src="../bsjs.0.4.js"></script>
+<script>
+bs.debug(1);
+bs( function(){ 
+var id="aa", parentId='stageHtml';
+	bs.Dom('<div id="'+id+'"></div>').S(
+	  'class', 'box',
+	  '>', bs.Dom('<label>'+id+'</label>'),
+	  '>', bs.Dom('<select class="position"></select>'),
+	  '>', bs.Dom('<select class="float"></select>'),
+	  '>', bs.Dom('<select class="clear"></select>'),
+	  '>', '<button class="add-box">+</button>',
+	  '>', '<button class="remove-box">x</button>',
+	  '<', '#'+parentId
+	);
+} );
+</script>
+</body>
+</html>

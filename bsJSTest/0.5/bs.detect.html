@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>detect-test</title>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+</head>
+<body>
+<div id="stage"></div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.5.js"></script>
+<script src="../../bsJSTest/bsTest.js"></script>
+<script src="../../bsJSTest/0.4/printer.js"></script>
+<script src="../../bsDetect/detect.0.5.js"></script>
+<script>
+var W = window;
+bs( function(){
+    var detect = bs.detectWindow( W ), k, arg = ['DETECT List'];
+    detect = bs.detectDOM( W, detect );
+    bsTest.tear( navigator.userAgent + '::' + navigator.platform + '::' + navigator.appVersion,
+    function() {
+/* navigator.userAgent :: navigator.platform :: navigator.appVersion */
+    } );
+    // jQuery.browser 와의 비교는 테스트 의미가 없는 것 같고..
+    // 항목별 테스트 자체를 강화할 예정.
+    for ( k in detect ) {
+        arg.push( k, bsTest.NOT( 'null' ), detect[k] + '' );
+    }
+    bsTest.apply( null, arg );
+} );
+</script>
+</body>
+</html>

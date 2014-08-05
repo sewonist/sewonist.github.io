@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<meta charset='utf-8'> 
+</head>
+<body>
+<form method='post' action='http://api.bsplugin.com/corsproxy/test/mockTarget.php'>
+<input type='text' id='keyword1'>
+<br/>
+<input type='text' id='keyword2'>
+</form>
+<div id='btnArea'></div>
+<hr>
+<span id='result'></span>
+<script src="http://projectbs.github.io/bsJS/bsjs.0.3.js"></script>
+<script>
+bs( function(){
+var xhr = getXHR();
+bs.Dom( '<div></div>' ).S( 
+    '<', '#btnArea', // body를 부모로
+    'html', 'bsCORS', // html 입력
+    'width', 300, // 스타일 지정
+    'click', bsCORS // 이벤트 등록
+);
+    
+bs.Dom( '<div></div>' ).S( 
+    '<', '#btnArea', // body를 부모로
+    'html', 'directCORS', // html 입력
+    'width', 300, // 스타일 지정
+    'click', directCORS // 이벤트 등록
+);
+function end(data) {
+    var r = document.getElementById('result');
+    r.innerHTML = data;
+//    console.log(data);
+//    bs.Dom( '<div></div>').S(
+//        '<', 'body',
+//        'html', data
+//    );
+}
+
+function bsCORS() {
+//    console.log(document.forms[0].elements[0].value);
+//    console.log(document.forms[0].action);
+
+    bs.post(end, 'http://api.bsplugin.com/corsproxy/test/bsCORS.php', 
+            'url', document.forms[0].action, 
+            'p1', document.forms[0].elements[0].value,
+            'p2', document.forms[0].elements[1].value);
+//    var xhr = getXHR();
+//    xhr.onreadystatechanged = handleStateChange;
+//    xhr.open("POST", 'http://api.bsplugin.com/corsproxy/test/bsCORS.php', true);
+//    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+//    xhr.send('p1=' + document.forms[0].elements[0].value + '&p2=' + document.forms[0].elements[1].value);
+}
+
+function directCORS() {
+//    var xhr = getXHR();
+    xhr.onreadystatechanged = handleStateChange;
+    xhr.open("POST", document.forms[0].action, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+    xhr.send('p1=' + document.forms[0].elements[0].value + '&p2=' + document.forms[0].elements[1].value);
+
+}
+
+function handleStateChange() {
+    if (xhr.readytState == 4 ) {
+        if (xhr.status == 200 ) {
+            console.log(xhr.responseText);
+        }
+    }
+}
+
+function getXHR() {
+    if (window.ActiveXObject) {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+    } else if (window.XMLHttpRequest) {
+        return new XMLHttpRequest();
+    }
+}
+
+} );
+</script>
+</body>
+</html>

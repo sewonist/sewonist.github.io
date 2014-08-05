@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>detect-test</title>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+</head>
+<body>
+<div id="stage"></div>
+<div id="result"></div>
+<div id="test"></div>
+<script src="../../bsJS/bsjs.0.4.js"></script>
+<script src="../../bsJSTest/bsTest.js"></script>
+<script src="../../bsJSTest/0.4/printer.js"></script>
+<script src="shallaa/jquery-1.11.0.js"></script>
+<script src="shallaa/jquery.browser.js"></script>
+<script src="../../bsDetect/detect.0.4.js"></script>
+<script>
+var W = window;
+bs( function(){
+    var detect = bs.detectWindow( W ), jb = $.browser, k, arg = ['DETECT List'];
+    detect = bs.detectDOM( W, detect );
+    bsTest.tear( navigator.userAgent + '::' + navigator.platform + '::' + navigator.appVersion,
+    function() {
+/* navigator.userAgent :: navigator.platform :: navigator.appVersion */
+        jqueryStr = function( origin ) {
+            switch ( origin ) {
+                case 'mozilla': return 'firefox';
+                case 'msie': return 'ie';
+                case 'android':
+                case 'webkit': return bsTest.IN( 'chrome', 'iphone', 'ipad', 'android', 'androidTablet', 'naver' );
+                case 'unix': return bsTest.IN( 'unix', 'linux' );
+                default: return origin;
+            }
+        }
+    } );
+    for ( k in detect ) {
+        arg.push( k, bsTest.NOT( 'null' ), detect[k] + '' );
+    }
+    bsTest.apply( null, arg );
+    bsTest( 'DETECT jQuery.browser',
+            'browser', jqueryStr( jb.name ), detect.browser,
+            'os', jb.platform || 'unix', detect.os,
+            'browserVer', jb.versionNumber, detect.browserVer
+
+    );
+} );
+</script>
+</body>
+</html>

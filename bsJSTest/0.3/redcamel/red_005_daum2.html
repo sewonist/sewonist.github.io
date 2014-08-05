@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>daum search</title>
+    <meta name="keywords" content="redcamel"/>
+    <meta name="description" content="redcamel"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="viewport"
+          content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,target-densitydpi=medium-dpi"/>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link href='daum/res/style.css' media='screen' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+<!--<a href="https://github.com/projectBS/bsJS">-->
+<!--<img style="position: fixed; top: 0; right: 0; border: 0;z-index:10000000000000000000000"-->
+<!--src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">-->
+<!--</a>-->
+
+<script src="../../../bsJS/bsjs.0.3.js"></script>
+<div id="stage"></div>
+<div id="contents"></div>
+<div class="_CLEAR"></div>
+<div id="detailView" class="thumb_detailView" style="display:none"></div>
+<script>
+    // 2014.03.23
+    // By Redcamel
+    // 개발목적 : Open API를 연동해봅세... JSON 콜백처리도 좀 -_-;;
+    bs(function() {
+        var time=0
+        var str
+
+        // 검색폼 디자인하고
+        function setSearchBoxs() {
+            bs.Dom("<input type='text'>").S('<', '#stage',
+                    '@id', 'red_search',
+                    'padding', 30, 'font-size', 20, '@placeholder', '검색하실 영화를 입력하세요',
+                    'width', '100%'
+
+            )
+            bs.Dom("<input type='button'>").S('<', '#stage',
+                    'padding', 30, 'font-size', 20, '@value', '검색',
+                    'width', '100%',
+                    'mousedown', function() {
+                        bs.js(result, daumURL(bs.Dom('#red_search').S('@value')))
+                    }
+            )
+        }
+
+        setSearchBoxs()
+
+        // url 생성기랄까 -_-
+        function daumURL(title) {
+            var domain='http://apis.daum.net/contents/movie'
+            var apikey='1551a3dbc74eb6c491f8579c93a30b31368eb5a4'
+            return str=title, domain + '?apikey=' + apikey + '&output=json' + '&q=' + encodeURI(str) + '&callback=';
+        }
+
+        // 결과 표현
+        function result($data) {
+            bs.Dom('#detailView').S('html', '', 'display', 'none')
+            // 10번시도해도 없으면 검색 실패
+            if(time > 10) return time=0, console.log('검색실패')
+            // 테이터 없어도 실패라고 다시 검색때림
+            if(!$data) return;
+            // 테이터가 존재하는데 검색결과가 없거나 이상한놈이면 다시검색함
+            if($data&&$data['code']&&$data['code']==500) time++, bs.js(result, daumURL(str))
+            else {
+                // 여튼 올바르게 리턴이 됐으면 판단하고 화면을 표현함
+                if($data.channel.item.length==0)  bs.Dom('#contents').S('html', '검색결과없음')
+                else {
+                    var con=bs.Dom('#contents')
+                    var info
+                    con.S('html', '')
+                    for(var i=0; i < $data.channel.item.length; i++) {
+                        info=$data.channel.item[i]
+                        bs.Dom('<div></div>').S('<', con,
+                                '>', bs.Dom('<div class="thumb_title"></div>').S('html', info.title[0].content,'width',110, 'this'),
+                                '>', bs.Dom('<div class="thumb_year" ></div>').S('html', info.year[0].content, 'this'),
+                                '>', bs.Dom('<img class="thumb_photo" src="' + info.thumbnail[0].content + '">'),
+                                '>', bs.Dom('<input type="button" value="자세히보기">').S('display', 'block', 'width', '100%', '@itemInfo', info,
+                                        'mousedown', function($e) {
+                                            bs.Dom('#detailView').S('display', 'block', 'html', '')
+                                            bs.Dom('#detailView').S(
+                                                    '>', bs.Dom('<div class="detail_title"></div>').S('html', $e.target.itemInfo.title[0].content + '(' + $e.target.itemInfo.year[0].content + ')', 'this'),
+                                                    'html+', $e.target.itemInfo.story[0].content,
+                                                    '>', bs.Dom('<div class="detail_homepage"></div>').S('html', $e.target.itemInfo.homepage[0].link=="" ? '공식홈페이지 : (폐쇄)' : '공식홈페이지 : (<a href="http://' + $e.target.itemInfo.homepage[0].link + '" target="_blank">' + $e.target.itemInfo.homepage[0].link + '</a>)', 'this')
+                                            )
+
+                                            for(var i=1; i < 6; i++) {
+                                                bs.Dom('#detailView').S(
+                                                        '>', bs.Dom('<div></div>').S(
+                                                                'width', "20%",
+                                                                'html', '<img src="' + $e.target.itemInfo['photo' + i][0].content + '" width="100%">',
+                                                                '@class', '_FL',
+                                                                'this'
+                                                        )
+                                                )
+                                            }
+                                            bs.Dom('#detailView').S('>', bs.Dom('<div></div>').S('@class', '_CLEAR', 'this'))
+
+                                        },
+                                        'this'
+                                ),
+                                'margin', 10, 'class', '_FL'
+
+                        )
+                    }
+                }
+            }
+        }
+
+        bs.js(result, daumURL('언어의정원'))
+    })
+</script>
+</body>
+</html>

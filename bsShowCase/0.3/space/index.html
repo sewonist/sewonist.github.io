@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>space</title>
+<meta name="keywords" content="bs5" />
+<meta name="description" content="bs5 Test suite" />
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="stage"></div>
+<script src="../../../bsJS/bsjs.0.3.js"></script>
+<script>
+bs( function(){
+var started;
+bs.Css( 'body' ).S( 'background', '#000' );
+bs.Css( '.ani' ).S( 'position', 'absolute' );
+//bs.ANI.fps( bs.Dom('<div></div>' ).S( '@id', 'fps', 'position','absolute', 'font-size', 11, 'color', '#fff', '<', 'body', 'this' )[0] );
+bs.Dom( '<div id="toggle"></div>' ).S( '<', 'body', 
+	'position','absolute', 'top', 30, 'left', 30, 'width', 70, 'height', 20, 'border-radius', 15, 'html', 'pause',
+	'background', '#fdd', 'line-height', 20, 'text-align', 'center', 'font-weight', 'bold', 'cursor', 'pointer', 'font-size', 11,
+	'down', function($e){
+		var isPause = bs.ANI.toggle();
+		bs.Dom("#toggle").S( 'html', isPause ? 'resume' : 'pause', 'background', isPause ? '#ffd' :'#fdd' );
+	}
+);
+bs.Dom( '<div id="stop"></div>' ).S( '<', 'body', 
+	'position','absolute', 'top', 60, 'left', 30, 'width', 70, 'height', 20, 'border-radius', 15, 'html', 'stop',
+	'background', '#fff', 'line-height', 20, 'text-align', 'center', 'font-weight', 'bold', 'cursor', 'pointer', 'font-size', 11,
+	'down', bs.ANI.stop
+);
+bs.WIN.sizer( function( w, h ){
+	var i, k, s;
+	if( started ) return;
+	started = 1, i = bs.DETECT.device =='tablet' || bs.DETECT.device=='mobile' ? 50 : 300;
+	while( i-- ){
+		k = bs.rand( 0, 1 ), s = bs.rand( 3, 15 );
+		bs.ANI.tween( 
+			bs.Dom( '<div></div>' ).S( 
+				'border-radius', s, 'opacity', 1,
+				'left', w * .5, 'top', h * .5, 'width', 1, 'height', 1, 
+				'background', 'rgb(' + bs.rand( 210, 255 ) + ',' + bs.rand( 210, 255 ) + ',' + bs.rand( 150, 200 ) + ')',
+				'class', 'ani', '<', '#stage', 'this'
+			),
+			'opacity', 0, 'width', s, 'height', s,
+			'left', k ? bs.rand( 0, 1 ) ? 0 : w - 30 : bs.rand( 0, w - 30 ),
+			'top', k ? bs.rand( 0, h - 30 ) : bs.rand( 0, 1 ) ? 0 : h - 30, 
+			'delay', bs.randf( 0, 2 ), 'time', bs.randf( .5, 5 ), 'loop', 0
+		);
+	}
+});
+
+
+});
+
+</script>
+</body>
+</html>

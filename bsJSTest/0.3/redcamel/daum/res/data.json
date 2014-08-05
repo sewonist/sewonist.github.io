@@ -1,0 +1,35 @@
+{
+    "header": {
+        "use" : true,
+        "title": "브라우져타이틀아 바껴라",
+        "navi": {
+            "datas": []
+        },
+        "logoSRC" : "daum/res/footer/logo.png",
+        "color" : "#fff",
+        "bgImage": {},"bgColor" :"#333",
+        "height" : "200","maxWidth": "980"
+
+    },
+    "contents" : {
+        "use" : true,
+        "color" : "#fff",
+        "bgColor" : "",
+        "maxWidth": "980"
+    },
+    "hotNews" : {
+        "use" : false,
+        "color" : "#fff",
+        "bgColor" :"#aaa",
+        "maxWidth": "980"
+    },
+    "footer" : {
+        "use" : true,
+        "logoSRC" : "daum/res/footer/logo.png",
+        "copyright" : "Copyright 2013.10 projectBS committee.<br/>Dual licenced under the MIT of GPL V2 licenses / by redcamel",
+        "color" : "#fff",
+        "bgColor" :"#333","bgImage" : null,
+        "maxWidth": "980"
+    }
+
+}
