@@ -1,39 +1,205 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-<title>bs5 Test suite</title>
-<meta name="keywords" content="bs5" />
-<meta name="description" content="bs5 Test suite" />
-<meta charset="utf-8"/>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="format-detection" content="telephone=no" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
-<link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
-</head>
-<body>
-<div id="stage">
+    <head>
+        <title>bs5 Test suite</title>
+        <meta name="keywords" content="bs5" />
+        <meta name="description" content="bs5 Test suite" />
+        <meta charset="utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+        <link rel="shortcut icon" href="http://blog.bsidesoft.com/favicon.ico" type="image/x-icon">
+    </head>
+    <body>
+        <div id="foo"></div>
+        <div id="stage"></div>
+        <div id="result"></div>
+        <div id="test"></div>
+        <script src="../../../../bsJS/bsjs.0.5.js"></script>
+        <script src="../../../../bsJSTest/bsTest.js"></script>
+        <script src="../../../../bsJSTest/0.5/printer.js"></script>
+        <script>
+            var UI;
+            bs.debug(1);
+            bs(function() {
+                var ui = (function() {
+                    var mobile = bs.DETECT.device == 'mobile', r = bs.rand, rf = bs.randf, tb = mobile ? 'bottom' : 'top',
+                            inited, init = function() {
+                                inited = 1,
+                                        bs.Css('#bsUI_toast').S('color', '#eeff41', 'overflow', 'hidden', 'text-align', 'center', 'position', 'fixed', tb, 0, 'background', '#2b2b2f', 'z-index', 999999999);
+                                bs.Css('.bsUI_toastParticle').S('border-radius', mobile ? 15 : 40, 'position', 'fixed');
+                            };
+                    return {
+                        toast: function(msg, time, durationTime, ease, parent) {
+                            var toast = function() {
+                                if (arguments[0])
+                                    toastQue.push(arguments);
+                                if (toasted || !toastQue.length)
+                                    return;
+                                toasted = 1, curr = toastQue.pop(), phase = 1,
+                                        bs.ANI.style(dom.S('display', 'block', 'html', curr[0], 'this'),
+                                                'opacity', 1, 'width', 100, 'left', 0, 'border-radius', 0,
+                                                'time', curr[1] || dTime, 'ease', curr[3] || 'linear', 'end', end,
+                                                'update', particle
+                                                );
+                            },
+                                    end = function() {
+                                        phase = 0,
+                                                bs.ANI.style(dom.S('border-radius', 0, 'opacity', 1, 'width', 100, 'left', 0, 'this'),
+                                                        'border-radius', 100, 'opacity', 0, 'width', 0, 'left', 50, 'time', curr[1] || dTime, 'ease', curr[3] || 'linear', 'delay', curr[2] || 1.5,
+                                                        'end', hide, 'update', particle
+                                                        );
+                                    },
+                                    hide = function() {
+                                        dom.S('border-radius', 100, 'opacity', 0, 'width', 0, 'left', 50, 'display', 'none'), toasted = 0, toast();
+                                    },
+                                    particle = function(target, rate, T) {
+                                        var i, x, y, s, s0;
+                                        rate = phase ? rate : 1 - rate, mobile ? (i = r(1, 2), s0 = 5) : (i = r(2, 5), s0 = 10);
+                                        while (i--) {
+                                            bs.ANI.style(
+                                                    bs.Dom('<div class="bsUI_toastParticle"></div>').S(
+                                                    'width', s0, 'height', s0, 'background', 'rgb(' + r(100, 200) + ',' + r(100, 200) + ',' + r(100, 200) + ')',
+                                                    tb, y = mobile ? r(5, 15) : r(10, 40), 'left', (x = (1 + (i % 2 ? -rate : rate)) * 50) + ':%', 'opacity', 1,
+                                                    '<', 'body', 'this'
+                                                    ),
+                                                    'left', r(-10, 10) + x, tb, (mobile ? r(-50, 50) : r(-50, 70)) + y,
+                                                    'width', s = mobile ? r(10, 15) : r(20, 40), 'height', s, 'opacity', 0,
+                                                    'time', rf(.5, 1.5), 'end', particleEnd
+                                                    );
 
-</div>
-<div id="result"></div>
-<div id="test"></div>
-<script src="../../../../bsJS/bsjs.0.5.js"></script>
-<script src="../../../../bsJSTest/bsTest.js"></script>
-<script src="../../../../bsJSTest/0.5/printer.js"></script>
-<script src="../../bsUI.0.1.js"></script>
-<script>
-bs.debug(1);
+                                        }
+                                    },
+                                    particleEnd = function(target) {
+                                        target.S(null);
+                                    },
+                                    dom = bs.Dom('<div id="bsUI_toast"></div>').S('border-radius', 0, 'left', '50:%', 'width', '0:%', 'display', 'none', 'opacity', 0, '<', 'body', 'this'),
+                                    toasted, toastQue = [], curr, phase, dTime = mobile ? .35 : .5;
+                            if (!inited)
+                                init();
+                            (ui.toast = toast).apply(this, arguments);
+                        },
+                        spinner: function(o) {
+                            /**
+                             * Returns the line color from the given string or array.
+                             */
+                            function getColor(color, idx) {
+                                return typeof color == 'string' ? color : color[idx % color.length]
+                            }
+                            /**
+                             * Fills in default values.
+                             */
+                            function merge(obj) {
+                                for (var i = 1; i < arguments.length; i++) {
+                                    var def = arguments[i];
+                                    for (var n in def)
+                                        if (obj[n] === undefined) {
+                                            obj[n] = def[n];
+                                        }
+                                }
+                                return obj;
+                            }
+                            /**
+                             * Appends children and returns the parent.
+                             */
+                            function ins(parent /* child1, child2, ...*/) {
+                                for (var i = 1, n = arguments.length; i < n; i++) {
+                                    parent.S('>', arguments[i]);
+                                }
+                                return parent;
+                            }
+                            /** The constructor */
+                            function Spinner(o) {
+                                this.opts = merge(o || {}, Spinner.defaults, defaults)
+                            }
 
-bs.plugin( 'ui' ),
-//bs.plugin( 'vdom' );
-bs( function(){
-	
-        bs.UI.toast( '<div class="msg">Hello<br>bsUI - toast~</div>', .3 );
-        bs.UI.spin();
+                            var defaults = {
+                                lines: 12, // The number of lines to draw
+                                length: 7, // The length of each line
+                                width: 5, // The line thickness
+                                radius: 10, // The radius of the inner circle
+                                rotate: 0, // Rotation offset
+                                corners: 1, // Roundness (0..1)
+                                color: '#000', // #rgb or #rrggbb
+                                direction: 1, // 1: clockwise, -1: counterclockwise
+                                speed: 1, // Rounds per second
+                                trail: 100, // Afterglow percentage
+                                opacity: 1 / 4, // Opacity of the lines
+                                fps: 20, // Frames per second when using setTimeout()
+                                zIndex: 2e9, // Use a high z-index by default
+                                className: 'spinner', // CSS class to assign to the element
+                                top: '50%', // center vertically
+                                left: '50%', // center horizontally
+                                position: 'absolute'  // element position
+                            };
 
-//	bs.Vdom.test();
-} );
-</script>
-</body>
+                            Spinner.prototype.spin = function(target) {
+                                this.stop();
+                                var self = this
+                                        , o = self.opts
+                                        , mid = o.radius + o.length + o.width
+                                        , el = self.el = bs.Dom('@<div></div>');
+                                el.S('class', o.className, 'position', o.position, 'width', 0, 'zIndex', o.zIndex, '@role', 'progressbar');
+                                if (target) {
+                                    target.S('>', el);
+                                }
+                                self.lines(el, self.opts);
+                            };
+                            Spinner.prototype.stop = function() {
+                            };
+                            Spinner.prototype.lines = function(el, o) {
+                                var i = 0
+                                        , start = (o.lines - 1) * (1 - o.direction) / 2
+                                        , seg;
+
+                                function fill(color, shadow) {
+                                    var r = bs.Dom('@<div></div>');
+                                    r.S(
+                                            'position', 'absolute',
+                                            'width', (o.length + o.width) + 'px',
+                                            'height', o.width + 'px',
+                                            'background', color,
+                                            'boxShadow', shadow,
+                                            'transformOrigin', 'left',
+                                            'transform', 'rotate(' + ~~(360 / o.lines * i + o.rotate) + 'deg) translate(' + o.radius + 'px' + ',0)',
+                                            'borderRadius', (o.corners * o.width >> 1) + 'px'
+                                            );
+                                    return r;
+                                }
+                                console.log(el);
+                                for (; i < o.lines; i++) {
+                                    var seg = bs.Dom('@<div></div>');
+                                    seg.S( '@class', 'seg'+i,
+                                            'position', 'absolute',
+                                            'top', 1 + ~(o.width / 2) + 'px',
+                                            'transform', o.hwaccel ? 'translate3d(0,0,0)' : '',
+                                            'opacity', o.opacity
+                                            //'animation', useCssAnimations && addAnimation(o.opacity, o.trail, start + i * o.direction, o.lines) + ' ' + 1 / o.speed + 's linear infinite'
+                                            );
+                                    /*
+                                     if (o.shadow)
+                                     ins(seg, css(fill('#000', '0 0 4px ' + '#000'), {top: 2 + 'px'}))
+                                     */
+                                    
+                                     console.log(seg);
+                                    
+                                    //ins(el, ins(seg, fill(getColor(o.color, i), '0 0 1px rgba(0,0,0,.1)')));
+                                    el.S('>', seg);
+                                }
+                                return el;
+                            }
+
+                            return new Spinner(o);
+                        }
+                    };
+                })();
+                UI = ui;
+                UI.spinner().spin(bs.Dom('#foo'));
+            });
+
+
+        </script>
+    </body>
 </html>
