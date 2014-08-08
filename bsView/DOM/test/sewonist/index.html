@@ -135,17 +135,47 @@
                                 position: 'absolute'  // element position
                             };
 
+                            /**
+                             * Internal method that adjusts the opacity of a single line.
+                             * Will be overwritten in VML fallback mode below.
+                             */
+                            Spinner.prototype.opacity = function(el, i, val) {
+                                if (i < el.childNodes.length) el.childNodes[i].style.opacity = val
+                                //var element = el.S('>' + i);
+                                //el.style.opacity = val;
+                                //bs.Dom(element[0]).S('opacity', val);
+                                //console.log(element[0]);
+                            }
                             Spinner.prototype.spin = function(target) {
                                 this.stop();
                                 var self = this
                                         , o = self.opts
                                         , mid = o.radius + o.length + o.width
-                                        , el = self.el = bs.Dom('@<div></div>');
+                                        , el = self.el = bs.Dom('<div></div>');
                                 el.S('class', o.className, 'position', o.position, 'width', 0, 'zIndex', o.zIndex, '@role', 'progressbar');
-                                if (target) {
-                                    target.S('>', el);
-                                }
                                 self.lines(el, self.opts);
+                                if (target) {
+                                    var ed = target.S('>', el)[0];
+                                }
+                                //if (!useCssAnimations) {
+                                // No CSS animation support, use setTimeout() instead
+                                var i = 0
+                                        , start = (o.lines - 1) * (1 - o.direction) / 2
+                                        , alpha
+                                        , fps = o.fps
+                                        , f = fps / o.speed
+                                        , ostep = (1 - o.opacity) / (f * o.trail / 100)
+                                        , astep = f / o.lines;
+                                (function anim() {
+                                    i++;
+                                    for (var j = 0; j < o.lines; j++) {
+                                        alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity)
+                                        self.opacity(ed, j * o.direction + start, alpha, o)
+                                    }
+                                    self.timeout = self.el && setTimeout(anim, ~~(1000 / fps))
+                                })();
+                                //}
+                                return self;
                             };
                             Spinner.prototype.stop = function() {
                             };
@@ -155,7 +185,7 @@
                                         , seg;
 
                                 function fill(color, shadow) {
-                                    var r = bs.Dom('@<div></div>');
+                                    var r = bs.Dom('<div></div>');
                                     r.S(
                                             'position', 'absolute',
                                             'width', (o.length + o.width) + 'px',
@@ -168,25 +198,20 @@
                                             );
                                     return r;
                                 }
-                                console.log(el);
                                 for (; i < o.lines; i++) {
-                                    var seg = bs.Dom('@<div></div>');
-                                    seg.S( '@class', 'seg'+i,
+                                    var seg = bs.Dom('<div></div>');
+                                    seg.S(
                                             'position', 'absolute',
                                             'top', 1 + ~(o.width / 2) + 'px',
                                             'transform', o.hwaccel ? 'translate3d(0,0,0)' : '',
                                             'opacity', o.opacity
                                             //'animation', useCssAnimations && addAnimation(o.opacity, o.trail, start + i * o.direction, o.lines) + ' ' + 1 / o.speed + 's linear infinite'
                                             );
-                                    /*
-                                     if (o.shadow)
-                                     ins(seg, css(fill('#000', '0 0 4px ' + '#000'), {top: 2 + 'px'}))
-                                     */
-                                    
-                                     console.log(seg);
-                                    
-                                    //ins(el, ins(seg, fill(getColor(o.color, i), '0 0 1px rgba(0,0,0,.1)')));
-                                    el.S('>', seg);
+
+                                    if (o.shadow) {
+                                        ins(seg, fill('#000', '0 0 4px ' + '#000').S("top", 2));
+                                    }
+                                    ins(el, ins(seg, fill(getColor(o.color, i), '0 0 1px rgba(0,0,0,.1)')));
                                 }
                                 return el;
                             }
@@ -197,6 +222,7 @@
                 })();
                 UI = ui;
                 UI.spinner().spin(bs.Dom('#foo'));
+                bs.Dom('#foo').S('width', 0, 'height', 1, 'display', 'block', 'margin-top', 200, 'margin-left', 'auto', 'margin-right', 'auto');
             });
 
 
