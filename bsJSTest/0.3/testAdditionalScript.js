@@ -1,1 +1,0 @@
-function TestAdditionalFunction(){ return 'Function in External File'; }
