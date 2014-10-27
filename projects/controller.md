@@ -1,3 +1,3 @@
 # Controller
 
-[gimmick:Disqus](sewonist-projects-controller)
+[gimmick:Disqus](sewonist-github-io)
