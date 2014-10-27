@@ -1,8 +1,8 @@
----
-layout: page
-categories: page
-title: TODO
----
+### 2014-10-7
+
+1. 우측에 헤더로가는 링크 만들기.
+
+
 
 ### 2014-10-25
 
