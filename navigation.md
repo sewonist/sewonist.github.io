@@ -5,5 +5,6 @@
 [TODO](todo.md)
 [Projects]()
 
+  * [CloudBoard](projects/cloudboard.md)
   * [Controller](projects/controller.md)
   * [Drone](projects/drone.md)
