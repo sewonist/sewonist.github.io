@@ -1,0 +1,84 @@
+/* local fonts */
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/NanumGothic-Regular.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 700;
+  src: url(fonts/NanumGothic-Bold.woff2) format('woff2');
+}
+
+/* font face */
+body {
+    font-family: 'Nanum Gothic';
+}
+h1,
+h2,
+h3 {
+    font-family: 'Nanum Gothic';
+    font-weight: normal;
+}
+.remark-code,
+.remark-inline-code {
+    font-family: 'Nanum Gothic';
+}
+
+/* layouts */
+.remark-slide-content { font-size: 16px; padding: 1em 2em 2em 2em; }
+.remark-slide-content h1 { font-size: 2.2em; }
+.remark-slide-content h2 { font-size: 1.4em; }
+.remark-slide-content h3 { font-size: 0.9em; }
+
+/* colors */
+.crimson { color: #DC143C; }
+.grey { color: #808080; }
+.red { color: #FF0000; }
+.blue { color: #0000FF; }
+
+/* font size */
+.font10px { font-size: 10px; }
+.font12px { font-size: 12px; }
+.font14px { font-size: 14px; }
+.font16px { font-size: 16px; }
+
+/* special */
+.invis { display: none; }
+
+/* custom classes */
+.footnote {
+  position: absolute;
+  bottom: 0.5em;
+  right: 29em;
+  font-size: 0.7em;
+}
+.ASIS {
+  position: absolute;
+  top: 14.75em;
+  left: 14em;
+  font-size: 1.7em;
+  color: #848E55;
+}
+.content123 { background: #000; color: #FFF;}
+.content123 a { color: #FFF;}
+
+.image123 { background: #000; color: #FFF;}
+.image123 a { color: #FFF;}
+#candlesongimg {
+  position: absolute;
+  top: 12em;
+  right: 5em;
+}
+#mobmuplatimg {
+  position: absolute;
+  top: 5em;
+  right: 5em;
+}
+.left-column { width: 50%; float: left; }
+
+/* per slide css */
+#slide-tylor-mv .left-column { width: 50%; float: left; }
+
