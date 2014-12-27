@@ -1,16 +1,4 @@
-/* local fonts */
-@font-face {
-  font-family: 'Nanum Gothic';
-  font-style: normal;
-  font-weight: 400;
-  src: url(fonts/NanumGothic-Regular.woff2) format('woff2');
-}
-@font-face {
-  font-family: 'Nanum Gothic';
-  font-style: normal;
-  font-weight: 700;
-  src: url(fonts/NanumGothic-Bold.woff2) format('woff2');
-}
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 
 /* font face */
 body {
@@ -62,11 +50,11 @@ h3 {
   font-size: 1.7em;
   color: #848E55;
 }
-.content123 { background: #000; color: #FFF;}
-.content123 a { color: #FFF;}
+.content { background: #000; color: #FFF;}
+.content a { color: #FFF;}
 
-.image123 { background: #000; color: #FFF;}
-.image123 a { color: #FFF;}
+.image { background: #000; color: #FFF;}
+.image a { color: #FFF;}
 #candlesongimg {
   position: absolute;
   top: 12em;
