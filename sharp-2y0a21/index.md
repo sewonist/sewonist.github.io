@@ -91,6 +91,7 @@ Node.js® is a platform built on Chrome's JavaScript runtime for easily building
 
 ## 샘플 node.js 작성
 
+[serial port](https://github.com/voodootikigod/node-serialport)
 [깃헙 링크](http://example.net/)
 
 ## 정리
