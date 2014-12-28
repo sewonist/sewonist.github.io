@@ -26,6 +26,7 @@ http://arduino.cc/en/Main/Software
 * IR 방식
 * 절대거리 (10~80cm)
 * 아날로그 출력
+* 정확한 거리는 아님
 
 ### 저렴
 
@@ -42,17 +43,26 @@ https://www.sparkfun.com/products/242
 
 ## 작동개요
 
+![](data/diagram.png)
+
 ![](data/logic.jpg)
 
-## 거리 테스트 스케치 작성
+## RAW 데이터 확인하기
 
 [깃헙 링크](http://example.net/)
 
-## 재실 테스트 스케치 작성
+## 라이브러리
 
-[깃헙 링크](http://example.net/)
+[깃헙 링크](https://github.com/dustMason/arduino-sharp-2y0a21)
+
+라이브러리 사용 시연
 
 ## 각자 테스트
+
+### 체크포인트 
+* 스케치를 아두이노에 올릴 수 있나요?
+* GND, Vcc, Vo 를 구분 할 수 있나요?
+
 
 ## 5분간 휴식
 
