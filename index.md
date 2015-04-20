@@ -1,1 +1,2 @@
-# Think of SEWONIST
+# 쏠땅82 금반 MT 임시페이지
+
