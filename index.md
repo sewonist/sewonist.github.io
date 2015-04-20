@@ -9,3 +9,16 @@
 팬션소개 : http://www.daebudovil.com/rsc/view.html?step=traffic&cno=4766&plm=
 
 다음맵 : http://dmaps.kr/pmf9
+
+## 시간
+
+선발대 3시 도착
+본대 4시 도착
+
+## 차량 배치
+
+| 닉네임        | 출발지           | 출발시간   | 동승장 |
+| ------------- |:----------------:| ----------:|  |
+| col 3 is      | right-aligned    | $1600 |  |
+| col 2 is      | centered      |   $12 |  |
+| zebra stripes | are neat      |    $1 |  |
