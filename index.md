@@ -40,6 +40,10 @@ MT비 입금내역 ▶ http://goo.gl/yw836S
 
 [gimmick:googlemaps(zoom: 11)](129+Jangoe-ri,+Seosin-myeon,+Hwaseong-si,+Gyeonggi-do)
 
+힐링펜션(경기화성 전곡항)
+* 주소 : 경기 화성시 서신면 장외리 129
+* 예약전화 : 1544-1574
+
 팬션소개 : http://www.daebudovil.com/rsc/view.html?step=traffic&cno=4766&plm=
 
 다음맵 : http://dmaps.kr/pmf9
