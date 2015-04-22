@@ -36,7 +36,7 @@
 
 MT비 입금내역 ▶ http://goo.gl/yw836S
 
-<iframe frameborder="0" height="600" style="width:100%" src="https://docs.google.com/spreadsheets/d/1d2B1NJfkPh_KVn2ZXIsZAZqdLjWRIkWzDG2TPCpbBgw/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+<iframe frameborder="0" height="500" style="width:100%" src="https://docs.google.com/spreadsheets/d/1d2B1NJfkPh_KVn2ZXIsZAZqdLjWRIkWzDG2TPCpbBgw/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
 
 ## 장소
 
