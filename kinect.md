@@ -1,12 +1,16 @@
 # kinect
 
-<iframe src="https://player.vimeo.com/video/45188800" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="https://vimeo.com/45188800">&quot;Kinetic Rain&quot; Changi Airport Singapore</a> from <a href="https://vimeo.com/artcom">ART+COM</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+## 멀티월 키넥트 버전 참고 영상
 
-<iframe src="https://player.vimeo.com/video/80195125" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
+일본 모션사이언스 전시 작업물
 [](http://www.youtube.com/watch?v=0qsBVYkUnU0)  
 
 [](http://www.youtube.com/watch?v=7F_k0jMiFjQ)  
 
+베를린 백화점에서 본 작업의 원형 메이킹
+<iframe src="https://player.vimeo.com/video/70897666" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="https://vimeo.com/70897666">
+
+국내 미디어 아트 그룹 전파상의 키넥틱 작업 메이킹
+<iframe src="https://player.vimeo.com/video/80195125" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 [gimmick:Disqus](sewonist-github-io)
