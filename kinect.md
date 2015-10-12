@@ -1,4 +1,4 @@
-# kinect
+# kinect wall
 
 ## 멀티월 키넥트 버전 참고 영상
 
