@@ -11,7 +11,7 @@
 [](http://www.youtube.com/watch?v=7F_k0jMiFjQ)  
 
 ### 베를린 백화점에서 본 작업의 원형 메이킹
-<iframe src="https://player.vimeo.com/video/70897666" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\
+<iframe src="https://player.vimeo.com/video/70897666" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 ### 국내 미디어 아트 그룹 전파상의 키넥틱 작업 메이킹
 <iframe src="https://player.vimeo.com/video/80195125" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
