@@ -5,7 +5,7 @@ description: > # this means to ignore newlines until "baseurl:"
   Think of SEWONIST
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://sewonist.github.io" # the base hostname & protocol for your site
-address: "Suite 202, 244-3, Seongsan 1-dong, Mapo-gu, Seoul, Korea"
+address: "studio3O2, 210-20, Seongsan 1-dong, Mapo-gu, Seoul, Korea"
 footer_links:
   dribbble: 
   email: sewonist@gmail.com
