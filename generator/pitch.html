@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Pitch Detector</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href='http://fonts.googleapis.com/css?family=Alike' rel='stylesheet' type='text/css'>
 		<style>
 			body { font: 14pt 'Alike', sans-serif;}
@@ -21,7 +22,7 @@
 	</head>
 	<body>
 		<script src="js/pitchdetect.js"></script>
-		
+		<input type="file" accept="audio/*;capture=microphone">
 		<p>
 			<button onclick="this.innerText = togglePlayback()">use demo audio</button>
 			<button onclick="toggleLiveInput()">use live input</button>
