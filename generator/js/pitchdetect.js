@@ -22,7 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var contextClass = (window.AudioContext ||
+        window.webkitAudioContext ||
+        window.mozAudioContext ||
+        window.oAudioContext ||
+        window.msAudioContext);
 
 var audioContext = null;
 var isPlaying = false;
@@ -40,7 +44,7 @@ var detectorElem,
 	detuneAmount;
 
 window.onload = function() {
-	audioContext = new AudioContext();
+	audioContext = new contextClass();
 	MAX_SIZE = Math.max(4,Math.floor(audioContext.sampleRate/5000));	// corresponds to a 5kHz signal
 	
 
