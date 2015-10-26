@@ -2,6 +2,9 @@
 
 ##2015-10-26
 
+**'nullptr' was not declared in this scope**
+Finally found out what to do. Added the -std=c++0x compiler argument under Project Properties -> C/C++ Build -> Settings -> GCC C++ Compiler -> Miscellaneous. It works now!
+
 [손에 폰잡고](http://newmart.iptime.org:2222/)
 [https://nodebb.org/](https://nodebb.org/) 이거 뭐야? 너무 좋아~!
 
