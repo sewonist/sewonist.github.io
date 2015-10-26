@@ -1,5 +1,10 @@
 #Logs
 
+##2015-10-26
+
+[손에 폰잡고](http://newmart.iptime.org:2222/)
+[https://nodebb.org/](https://nodebb.org/) 이거 뭐야? 너무 좋아~!
+
 ##2015-10-23
 
 mdwiki 가 검색 되지않는 문제점은 github 검색으로 해결 하면 됨.
