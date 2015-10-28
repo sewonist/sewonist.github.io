@@ -1,5 +1,30 @@
 #Logs
 
+##2015-10-28
+
+###openFramework vs project generator
+
+- of library path 수정
+
+project.vcxproj path 수정
+```
+..\..\..\..\..\of_v0.8.4_vs_release\libs
+```
+
+###ijnclude
+%(AdditionalIncludeDirectories) 패스가 틀림.
+
+```
+..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\graphics;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\app;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\sound;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\utils;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\communication;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\video;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\types;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\math;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\3d;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\gl;..\..\..\..\..\of_v0.8.4_vs_release\libs\openFrameworks\events;..\..\..\..\..\of_v0.8.4_vs_release\libs\glut\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\rtAudio\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\quicktime\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\freetype\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\freetype\include\freetype2;..\..\..\..\..\of_v0.8.4_vs_release\libs\freeImage\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\fmodex\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\videoInput\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\glew\include\;..\..\..\..\..\of_v0.8.4_vs_release\libs\glu\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\tess2\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\cairo\include\cairo;..\..\..\..\..\of_v0.8.4_vs_release\libs\poco\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\glfw\include;..\..\..\..\..\of_v0.8.4_vs_release\libs\openssl\include;..\..\..\..\..\of_v0.8.4_vs_release\addons;
+```
+
+###library
+```
+..\..\..\..\..\of_v0.8.4_vs_release\libs\glut\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\glfw\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\rtAudio\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\FreeImage\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\freetype\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\quicktime\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\fmodex\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\videoInput\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\cairo\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\glew\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\glu\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\openssl\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\Poco\lib\vs;..\..\..\..\..\of_v0.8.4_vs_release\libs\tess2\lib\vs;
+```
+
+경로 문제로 제대로 빌드가 되지 않음. of 경로를 프로젝트에 맞혀서 해결.
+
 ##2015-10-26
 
 **'nullptr' was not declared in this scope**
