@@ -1,5 +1,12 @@
 #Logs
 
+##2015-10-29
+
+Pd
+
+- osc~ 를 이용한 사운드 출력
+- route 를 이용한 메세지 처리
+
 ##2015-10-28
 
 ###openFramework vs project generator
