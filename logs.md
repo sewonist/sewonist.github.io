@@ -1,5 +1,26 @@
 #Logs
 
+=======
+##2015-10-30
+
+그냥 요즘 많이 보여서~~~ ㅎㅎㅎ 
+
+#### Hypnotizing circle dance by Sufi Zikr
+
+<iframe width="420" height="315" src="https://www.youtube.com/embed/G5goISKPSH8?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+
+#### De Staat - Witch Docto
+
+<iframe width="500" height="281" src="https://www.youtube.com/embed/0ttGgIQpAUc?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+
+#### toki
+
+<iframe src="https://player.vimeo.com/video/141430185" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+#### Ants Circle
+
+<iframe width="420" height="315" src="https://www.youtube.com/embed/mA37cb10WMU?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+
 ##2015-10-29
 
 Pd
