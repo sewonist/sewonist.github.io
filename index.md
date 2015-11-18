@@ -17,6 +17,7 @@
 ## Slides
 
 ####[Sharp](slides/#!sharp.md)
+####[WaveNet](slides/#!wavenet.md)
 
 ---
 
