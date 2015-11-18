@@ -23,6 +23,13 @@ How to interact analog craft with technic?
 
 <iframe width="420" height="315" src="https://www.youtube.com/embed/mA37cb10WMU?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
 
+##2015-10-29
+
+Pd
+
+- osc~ 를 이용한 사운드 출력
+- route 를 이용한 메세지 처리
+
 ##2015-10-28
 
 ###openFramework vs project generator
