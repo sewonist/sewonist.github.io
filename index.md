@@ -8,7 +8,7 @@
 
 ## Pages
 
-####[Agument Relationship](#!pages/argument-relationship.md)
+####[Agument Relationship](#!pages/augmented-relationship.md)
 ####[Multi Mobile Canvas](#!pages/multi-mobile-canvas.md)
 ####[Kinect](#!pages/kinect.md)
 ####[Sharp](#!pages/sharp.md)
