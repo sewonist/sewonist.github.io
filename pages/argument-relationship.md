@@ -1,6 +1,6 @@
 # Argument Relationship 작업노트 
 
-### Statements 
+## Statements 
 
 > 어떤 개체가 우리에게 기쁨을 줄 것인가, 아니면 슬픔을 줄 것인가는 그 개체와 우리가 맺는 '관계'에 의해 경절된다.
 
@@ -12,7 +12,7 @@
 
 ![](/images/2018/03/ar001.jpg)
 
-### Sequences
+## Sequences
 
 ![](/images/2018/03/ar002.jpg)
 
