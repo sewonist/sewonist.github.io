@@ -23,5 +23,5 @@ footer_links:
 
 # Build settings
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 permalink: /:title/
