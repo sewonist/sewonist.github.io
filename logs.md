@@ -1,5 +1,9 @@
 #Logs
 
+
+[gimmick:Disqus](sewonist-github-io)
+
+
 ##2015-11-11
 How to interact analog craft with technic?
 
@@ -83,5 +87,3 @@ javascript:
 ```
 
 Note: MDWiki 코드하이라이트에서는 자바스크립트 개행을 하면 안되는 듯 함.
-
-[gimmick:Disqus](sewonist-github-io)
