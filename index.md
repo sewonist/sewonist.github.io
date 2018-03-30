@@ -1,5 +1,7 @@
 #Index
 
+[gimmick:Disqus](sewonist-github-io)
+
 ##Logs
 
 ####[Logs](#!logs.md)
