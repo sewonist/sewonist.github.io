@@ -29,13 +29,13 @@
 			<key>metadata</key>
 			<dict>
 				<key>bundle-identifier</key>
-				<string>com.sewonist.seff</string>
+				<string>com.sewonist.arseff</string>
 				<key>bundle-version</key>
 				<string>1.0</string>
 				<key>kind</key>
 				<string>software</string>
 				<key>title</key>
-				<string>AR SEFF</string>
+				<string>arseff</string>
 			</dict>
 		</dict>
 	</array>
