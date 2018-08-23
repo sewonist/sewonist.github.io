@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Unity-iPhone.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>armv7</string>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>6F25882F9FFED419B313A5A94FFC739B5B43F541</string>
+				<key>dateExpires</key>
+				<string>08/02/2019</string>
+				<key>type</key>
+				<string>iOS Development</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>armv7</string>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>6F25882F9FFED419B313A5A94FFC739B5B43F541</string>
+						<key>dateExpires</key>
+						<string>08/02/2019</string>
+						<key>type</key>
+						<string>iOS Development</string>
+					</dict>
+					<key>name</key>
+					<string>Vuforia.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>XTM65VN8C5</string>
+						<key>name</key>
+						<string>sewon ahn</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>GY7SHFT4RW.com.sewonist.sb.pillar</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>XTM65VN8C5</string>
+				<key>get-task-allow</key>
+				<true/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>GY7SHFT4RW.com.sewonist.sb.pillar</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>pillar.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>a37ff9a5-dbf4-4347-ac9d-39d6aed97132</string>
+				<key>name</key>
+				<string>iOS Team Provisioning Profile: *</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>XTM65VN8C5</string>
+				<key>name</key>
+				<string>sewon ahn</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
