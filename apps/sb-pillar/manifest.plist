@@ -11,19 +11,19 @@
 					<key>kind</key>
 					<string>software-package</string>
 					<key>url</key>
-					<string>https://sewonist.github.io/sb-pillar/Pillar_0823.ipa</string>
+					<string>https://sewonist.github.io/apps/sb-pillar/Pillar_0823.ipa</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>display-image</string>
 					<key>url</key>
-					<string>https://sewonist.github.io/sb-pillar/57.png</string>
+					<string>https://sewonist.github.io/apps/sb-pillar/57.png</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>full-size-image</string>
 					<key>url</key>
-					<string>https://sewonist.github.io/sb-pillar/512.png</string>
+					<string>https://sewonist.github.io/apps/sb-pillar/512.png</string>
 				</dict>
 			</array>
 			<key>metadata</key>
