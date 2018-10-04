@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Unity-iPhone.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>armv7</string>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>6F25882F9FFED419B313A5A94FFC739B5B43F541</string>
+				<key>dateExpires</key>
+				<string>08/02/2019</string>
+				<key>type</key>
+				<string>iOS Development</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>armv7</string>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>6F25882F9FFED419B313A5A94FFC739B5B43F541</string>
+						<key>dateExpires</key>
+						<string>08/02/2019</string>
+						<key>type</key>
+						<string>iOS Development</string>
+					</dict>
+					<key>name</key>
+					<string>Vuforia.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>XTM65VN8C5</string>
+						<key>name</key>
+						<string>sewon ahn</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>GY7SHFT4RW.com.sewonist.tlm</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>XTM65VN8C5</string>
+				<key>get-task-allow</key>
+				<true/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>GY7SHFT4RW.com.sewonist.tlm</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>tlm.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>29f3d7c9-5570-4830-b84c-3fed8d67e19a</string>
+				<key>name</key>
+				<string>Wildcard</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>XTM65VN8C5</string>
+				<key>name</key>
+				<string>sewon ahn</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
